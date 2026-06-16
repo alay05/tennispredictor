@@ -40,10 +40,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 4 plans
 
 Plans:
-- [ ] 01-01: Python project skeleton, configuration, logging, and quality tooling
-- [ ] 01-02: Sackmann source acquisition, manifest, checksums, and attribution
-- [ ] 01-03: Schema validation and ATP-only quarantine rules
-- [ ] 01-04: Canonical domain tables and v1 data-handling rules
+- [ ] 01-01-PLAN.md — Python project skeleton, dependency gate, configuration, logging, and quality tooling
+- [ ] 01-02-PLAN.md — Sackmann source acquisition, immutable snapshot manifest, checksums, and attribution
+- [ ] 01-03-PLAN.md — Schema validation and ATP-only quarantine rules
+- [ ] 01-04-PLAN.md — Canonical domain tables, deterministic IDs, and v1 data-handling rules
 
 ### Phase 2: Leakage-Safe Feature Engine
 **Goal:** System can create point-in-time ATP pre-match feature snapshots by processing matches chronologically and proving future data cannot affect historical features.
