@@ -1,0 +1,516 @@
+project:
+  name: ATP Tennis Prediction and Kalshi EV Detection System
+  version: 1.0
+
+objective: >
+  Build a production-grade machine learning system that predicts ATP tennis
+  match outcomes, generates calibrated win probabilities, compares those
+  probabilities against live Kalshi market prices, and identifies positive
+  expected value betting opportunities.
+
+scope:
+  tour: ATP only
+  betting_platform: Kalshi only
+
+primary_data_source:
+
+  name: Jeff Sackmann ATP Tennis Dataset
+  repository: https://github.com/JeffSackmann/tennis_atp
+
+  description: >
+    This dataset will serve as the primary source of historical ATP match
+    results, rankings, player statistics, surfaces, tournament information,
+    and other match-level data.
+
+success_criteria:
+
+  predictive:
+    target_accuracy: 0.65
+    calibrated_probabilities: true
+
+  betting:
+    positive_roi: true
+    statistically_significant_sample_size: true
+
+system_overview:
+
+  objective:
+    - Predict ATP match winners
+    - Generate win probabilities
+    - Compare probabilities against Kalshi implied probabilities
+    - Detect positive expected value opportunities
+    - Rank betting opportunities by expected value
+
+  outputs:
+    - predicted_winner
+    - player_A_win_probability
+    - player_B_win_probability
+    - market_probability
+    - edge
+    - expected_value
+    - recommended_bet
+
+data_sources:
+
+  historical_matches:
+
+    source: Jeff Sackmann ATP datasets
+
+    required_fields:
+      - tournament
+      - date
+      - surface
+      - round
+      - winner
+      - loser
+      - score
+      - winner_rank
+      - loser_rank
+      - winner_aces
+      - loser_aces
+      - winner_double_faults
+      - loser_double_faults
+      - winner_first_serve_pct
+      - loser_first_serve_pct
+      - winner_service_points_won
+      - loser_service_points_won
+      - winner_return_points_won
+      - loser_return_points_won
+
+  rankings:
+
+    source: Jeff Sackmann ATP rankings datasets
+
+    required_fields:
+      - player
+      - ranking
+      - ranking_points
+      - ranking_date
+
+live_market_data:
+
+  source: Kalshi API
+
+  required_endpoints:
+    - list_markets
+    - get_market
+    - get_orderbook
+
+  purpose:
+    - Retrieve live ATP tennis markets
+    - Retrieve live pricing
+    - Calculate implied probabilities
+    - Compare against model predictions
+
+feature_engineering:
+
+  player_features:
+
+    rankings:
+      - current_rank
+      - ranking_points
+      - ranking_change_30_days
+
+    recent_form:
+      - win_pct_last_5
+      - win_pct_last_10
+      - win_pct_last_20
+
+    serving:
+      - ace_rate
+      - double_fault_rate
+      - first_serve_percentage
+      - service_points_won_percentage
+      - hold_percentage
+
+    returning:
+      - return_points_won_percentage
+      - break_conversion_percentage
+      - break_points_saved_percentage
+
+    experience:
+      - age
+      - career_matches
+      - career_titles
+
+  head_to_head:
+
+    features:
+      - h2h_wins
+      - h2h_losses
+      - h2h_win_percentage
+
+  surface_specific:
+
+    surfaces:
+      - hard
+      - clay
+      - grass
+
+    features:
+      - surface_matches_played
+      - surface_win_percentage
+      - surface_elo
+      - surface_hold_percentage
+      - surface_break_percentage
+
+  match_context:
+
+    features:
+      - tournament_level
+      - round
+      - days_rest
+
+  differential_features:
+
+    most_important:
+      - rank_difference
+      - ranking_points_difference
+      - elo_difference
+      - surface_elo_difference
+      - recent_form_difference
+      - ace_rate_difference
+      - hold_percentage_difference
+      - return_percentage_difference
+      - break_conversion_difference
+      - days_rest_difference
+
+elo_system:
+
+  purpose: >
+    Maintain dynamic player ratings that update after every ATP match.
+
+  ratings:
+
+    overall:
+      initial_rating: 1500
+
+    hard:
+      initial_rating: 1500
+
+    clay:
+      initial_rating: 1500
+
+    grass:
+      initial_rating: 1500
+
+  generated_features:
+    - player_A_elo
+    - player_B_elo
+    - elo_difference
+    - player_A_surface_elo
+    - player_B_surface_elo
+    - surface_elo_difference
+
+  requirements:
+    - update chronologically
+    - never use future information
+    - recalculate from historical match history
+
+target_definition:
+
+  label:
+    1: player_A_wins
+    0: player_B_wins
+
+models:
+
+  baseline:
+
+    logistic_regression:
+      purpose: benchmark
+
+    random_forest:
+      purpose: replicate common tennis prediction approaches
+
+  production:
+
+    xgboost:
+      purpose: primary model
+
+training:
+
+  methodology:
+    - chronological_training
+    - no_random_shuffle
+    - no_future_information
+
+  dataset_split:
+
+    train: 70
+    validation: 15
+    test: 15
+
+  leakage_prevention:
+
+    requirements:
+      - only use information available before match start
+      - rankings must exist before match date
+      - elo must be calculated using only prior matches
+      - recent form must exclude future matches
+      - head_to_head must exclude future matches
+
+evaluation:
+
+  predictive_metrics:
+    - accuracy
+    - roc_auc
+    - log_loss
+    - brier_score
+
+  calibration_metrics:
+    - calibration_curve
+    - expected_calibration_error
+
+  betting_metrics:
+    - roi
+    - win_rate
+    - average_edge
+
+kalshi_integration:
+
+  objective: >
+    Continuously monitor ATP markets on Kalshi and identify positive
+    expected value opportunities.
+
+  polling_interval_seconds: 60
+
+  workflow:
+    - fetch_live_markets
+    - normalize_player_names
+    - map_market_to_match
+    - generate_prediction
+    - calculate_market_probability
+    - calculate_edge
+    - rank_opportunities
+
+probability_conversion:
+
+  kalshi_yes_price:
+
+    example:
+      yes_price_cents: 61
+
+    implied_probability:
+      formula: yes_price_cents / 100
+
+    result: 0.61
+
+edge_calculation:
+
+  formula: model_probability - market_probability
+
+  example:
+
+    model_probability: 0.68
+    market_probability: 0.61
+    edge: 0.07
+
+positive_ev_definition:
+
+  requirements:
+    minimum_edge: 0.05
+    minimum_model_confidence: 0.60
+
+expected_value:
+
+  formula: >
+    (model_probability * payout_if_win)
+    -
+    ((1 - model_probability) * stake)
+
+bet_selection:
+
+  filters:
+    minimum_edge: 0.05
+    minimum_liquidity: 1000
+    minimum_model_confidence: 0.60
+
+  ranking:
+    - expected_value
+    - edge
+
+alerts:
+
+  trigger:
+    positive_ev_opportunity_detected
+
+  outputs:
+    - terminal
+    - email
+    - sms
+
+  example:
+
+    match: Carlos Alcaraz vs Jannik Sinner
+
+    model_probability: 0.68
+    market_probability: 0.61
+    edge: 0.07
+
+    recommendation: BUY_YES
+
+database_schema:
+
+  tables:
+
+    matches:
+      purpose: historical ATP match data
+
+    player_ratings:
+      purpose: elo ratings
+
+    model_predictions:
+      columns:
+        - match_id
+        - player_A
+        - player_B
+        - model_probability
+        - timestamp
+
+    live_markets:
+      columns:
+        - market_id
+        - title
+        - yes_price
+        - no_price
+        - volume
+        - timestamp
+
+    opportunities:
+      columns:
+        - market_id
+        - model_probability
+        - market_probability
+        - edge
+        - expected_value
+        - timestamp
+
+project_structure:
+
+  root:
+
+    data:
+      - matches.csv
+      - rankings.csv
+
+    src:
+      - ingest.py
+      - preprocess.py
+      - feature_engineering.py
+      - elo.py
+      - train_logistic.py
+      - train_random_forest.py
+      - train_xgboost.py
+      - evaluate.py
+      - predict.py
+      - kalshi_client.py
+      - betting_engine.py
+      - alerts.py
+      - backtest.py
+
+    models:
+      - random_forest.pkl
+      - xgboost.pkl
+
+    notebooks:
+      - exploration.ipynb
+
+    output:
+      - predictions.csv
+      - opportunities.csv
+      - backtest_results.csv
+
+pipeline:
+
+  steps:
+    - load_jeff_sackmann_data
+    - clean_data
+    - calculate_elo
+    - calculate_surface_elo
+    - build_recent_form_features
+    - build_head_to_head_features
+    - build_differential_features
+    - create_training_dataset
+    - train_models
+    - evaluate_models
+    - calibrate_probabilities
+    - select_best_model
+    - connect_to_kalshi
+    - generate_live_predictions
+    - calculate_edge
+    - calculate_expected_value
+    - rank_opportunities
+    - generate_alerts
+
+backtesting:
+
+  objective: >
+    Validate profitability before risking capital.
+
+  process:
+    - replay historical ATP matches
+    - generate model predictions
+    - compare against historical market probabilities if available
+    - simulate betting decisions
+    - calculate performance metrics
+
+  outputs:
+    - roi
+    - profit_curve
+    - win_rate
+    - average_edge
+    - max_drawdown
+
+prediction_example:
+
+  input:
+
+    player_A: Carlos Alcaraz
+    player_B: Jannik Sinner
+
+    features:
+      elo_difference: 75
+      surface_elo_difference: 100
+      rank_difference: -1
+      recent_form_difference: 0.08
+
+  output:
+
+    player_A_probability: 0.63
+    player_B_probability: 0.37
+    predicted_winner: Carlos Alcaraz
+
+    market_probability: 0.58
+
+    edge: 0.05
+
+    recommendation: BUY_YES
+
+implementation_requirements:
+
+  priority_order:
+    1: data_ingestion
+    2: elo_system
+    3: feature_engineering
+    4: xgboost_training
+    5: probability_calibration
+    6: kalshi_integration
+    7: ev_detection
+    8: backtesting
+
+  coding_requirements:
+    - modular architecture
+    - fully typed code
+    - unit tests for critical logic
+    - reproducible training pipeline
+    - configurable parameters
+    - logging throughout system
+
+final_goal: >
+  Build an end-to-end ATP tennis prediction platform that uses Jeff Sackmann's
+  ATP datasets as the primary data source, generates calibrated match win
+  probabilities using Elo ratings and machine learning, continuously monitors
+  Kalshi ATP markets, identifies positive expected value opportunities, and
+  provides actionable betting recommendations supported by historical
+  backtesting and performance evaluation.
