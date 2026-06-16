@@ -28,7 +28,6 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 ### Phase 1: Foundation and ATP Data Contracts
 **Goal:** Developer can run a reproducible ATP-only data foundation with pinned Sackmann sources, validated schemas, canonical tables, and documented v1 data rules.
-**Mode:** mvp
 **Depends on:** Nothing (first phase)
 **Requirements:** FND-01, FND-02, FND-03, FND-04, FND-05, FND-06
 **Success Criteria** (what must be TRUE):
