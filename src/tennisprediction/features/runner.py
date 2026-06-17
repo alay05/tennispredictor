@@ -8,6 +8,12 @@ from tennisprediction.features.schemas import (
     FeatureBuildResult,
     PlayerFeatureSnapshot,
 )
+from tennisprediction.features.state import (
+    PlayerFeatureState,
+    apply_match_result_batch,
+    build_pre_match_snapshot,
+    get_player_state,
+)
 
 
 def _build_player_snapshot(
@@ -16,6 +22,7 @@ def _build_player_snapshot(
     feature_version: str,
     side: str,
     rankings: list[CanonicalRanking],
+    player_states: dict[str, PlayerFeatureState],
 ) -> PlayerFeatureSnapshot:
     player_a_id = match.winner_canonical_player_id
     player_b_id = match.loser_canonical_player_id
@@ -30,6 +37,14 @@ def _build_player_snapshot(
         canonical_player_id=canonical_player_id,
         as_of_date=match.tourney_date,
         rankings=rankings,
+    )
+    state_features = build_pre_match_snapshot(
+        state=get_player_state(
+            canonical_player_id=canonical_player_id,
+            player_states=player_states,
+        ),
+        as_of_date=match.tourney_date,
+        surface=match.surface,
     )
     return PlayerFeatureSnapshot(
         feature_version=feature_version,
@@ -53,6 +68,15 @@ def _build_player_snapshot(
         rank_missing=ranking.rank_missing,
         rank_points_missing=ranking.rank_points_missing,
         ranking_age_days=ranking.ranking_age_days,
+        elo_overall=state_features.elo_overall,
+        elo_surface=state_features.elo_surface,
+        rest_days=state_features.rest_days,
+        form_last_5_win_rate=state_features.form_last_5_win_rate,
+        form_last_10_win_rate=state_features.form_last_10_win_rate,
+        form_last_20_win_rate=state_features.form_last_20_win_rate,
+        form_last_5_count=state_features.form_last_5_count,
+        form_last_10_count=state_features.form_last_10_count,
+        form_last_20_count=state_features.form_last_20_count,
         lineage=match.lineage,
     )
 
@@ -65,6 +89,8 @@ def build_feature_snapshots(
 ) -> FeatureBuildResult:
     player_snapshots: list[PlayerFeatureSnapshot] = []
     differential_rows = []
+    state_audit_records = []
+    player_states: dict[str, PlayerFeatureState] = {}
     for cohort in build_match_cohorts(matches):
         for match in cohort:
             player_a_snapshot = _build_player_snapshot(
@@ -72,17 +98,25 @@ def build_feature_snapshots(
                 feature_version=feature_version,
                 side="A",
                 rankings=rankings,
+                player_states=player_states,
             )
             player_b_snapshot = _build_player_snapshot(
                 match=match,
                 feature_version=feature_version,
                 side="B",
                 rankings=rankings,
+                player_states=player_states,
             )
             player_snapshots.extend([player_a_snapshot, player_b_snapshot])
             differential_rows.append(build_differential_row(player_a_snapshot, player_b_snapshot))
+        player_states, cohort_audit_records = apply_match_result_batch(
+            matches=cohort,
+            player_states=player_states,
+        )
+        state_audit_records.extend(cohort_audit_records)
 
     return FeatureBuildResult(
         player_snapshots=player_snapshots,
         differential_rows=differential_rows,
+        state_audit_records=state_audit_records,
     )

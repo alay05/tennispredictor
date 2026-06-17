@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from tennisprediction.domain.models import SourceLineage
+from tennisprediction.features.state import PlayerStateAuditRecord
 
 
 @dataclass(frozen=True)
@@ -28,6 +29,15 @@ class PlayerFeatureSnapshot:
     rank_missing: bool
     rank_points_missing: bool
     ranking_age_days: int | None
+    elo_overall: float
+    elo_surface: float
+    rest_days: int | None
+    form_last_5_win_rate: float | None
+    form_last_10_win_rate: float | None
+    form_last_20_win_rate: float | None
+    form_last_5_count: int
+    form_last_10_count: int
+    form_last_20_count: int
     lineage: SourceLineage
 
 
@@ -47,6 +57,12 @@ class FeatureDifferentialRow:
     rank_diff: int | None
     rank_points_diff: int | None
     ranking_change_diff: int | None
+    elo_diff: float
+    surface_elo_diff: float
+    rest_days_diff: int | None
+    form_last_5_win_rate_diff: float | None
+    form_last_10_win_rate_diff: float | None
+    form_last_20_win_rate_diff: float | None
     lineage: SourceLineage
 
 
@@ -54,3 +70,4 @@ class FeatureDifferentialRow:
 class FeatureBuildResult:
     player_snapshots: list[PlayerFeatureSnapshot]
     differential_rows: list[FeatureDifferentialRow]
+    state_audit_records: list[PlayerStateAuditRecord]

@@ -9,6 +9,12 @@ def _diff(left: int | None, right: int | None) -> int | None:
     return left - right
 
 
+def _float_diff(left: float | None, right: float | None) -> float | None:
+    if left is None or right is None:
+        return None
+    return left - right
+
+
 def build_differential_row(
     player_a_snapshot: PlayerFeatureSnapshot,
     player_b_snapshot: PlayerFeatureSnapshot,
@@ -30,6 +36,21 @@ def build_differential_row(
         ranking_change_diff=_diff(
             player_a_snapshot.ranking_change,
             player_b_snapshot.ranking_change,
+        ),
+        elo_diff=player_a_snapshot.elo_overall - player_b_snapshot.elo_overall,
+        surface_elo_diff=player_a_snapshot.elo_surface - player_b_snapshot.elo_surface,
+        rest_days_diff=_diff(player_a_snapshot.rest_days, player_b_snapshot.rest_days),
+        form_last_5_win_rate_diff=_float_diff(
+            player_a_snapshot.form_last_5_win_rate,
+            player_b_snapshot.form_last_5_win_rate,
+        ),
+        form_last_10_win_rate_diff=_float_diff(
+            player_a_snapshot.form_last_10_win_rate,
+            player_b_snapshot.form_last_10_win_rate,
+        ),
+        form_last_20_win_rate_diff=_float_diff(
+            player_a_snapshot.form_last_20_win_rate,
+            player_b_snapshot.form_last_20_win_rate,
         ),
         lineage=player_a_snapshot.lineage,
     )
