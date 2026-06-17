@@ -18,7 +18,7 @@ v1 builds an ATP-only, leakage-safe prediction and Kalshi EV detection workflow 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation and ATP Data Contracts** - Establish the typed project, Sackmann source lineage, ATP-only scope rules, and canonical data tables.
-- [ ] **Phase 2: Leakage-Safe Feature Engine** - Produce chronological pre-match feature snapshots with leakage tests as a phase gate.
+- [x] **Phase 2: Leakage-Safe Feature Engine** - Produce chronological pre-match feature snapshots with leakage tests as a phase gate. (completed 2026-06-17)
 - [ ] **Phase 3: Modeling, Calibration, and Artifact Registry** - Train benchmark and production-candidate models with calibrated probabilities and reproducible artifacts.
 - [ ] **Phase 4: Backtesting and EV Decision Core** - Replay predictions and EV decisions with provenance-aware betting evidence.
 - [ ] **Phase 5: Kalshi Read-Only Market Integration** - Collect and persist Kalshi-only market, detail, and orderbook snapshots without execution surfaces.
@@ -63,7 +63,7 @@ Plans:
   4. Leakage tests fail if Elo, ranking, recent form, H2H, or aggregate features include the current match or future matches.
   5. Developer can inspect persisted feature snapshots with feature version, match identity, player sides, and as-of context.
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 **Wave 1**
 
@@ -79,7 +79,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 02-04-PLAN.md — Feature persistence tables and invariant leakage gate
+- [x] 02-04-PLAN.md — Feature persistence tables and invariant leakage gate
 
 ### Phase 3: Modeling, Calibration, and Artifact Registry
 
@@ -202,7 +202,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and ATP Data Contracts | 4/4 | Complete | 2026-06-16 |
-| 2. Leakage-Safe Feature Engine | 3/4 | In Progress|  |
+| 2. Leakage-Safe Feature Engine | 4/4 | Complete   | 2026-06-17 |
 | 3. Modeling, Calibration, and Artifact Registry | 0/4 | Not started | - |
 | 4. Backtesting and EV Decision Core | 0/3 | Not started | - |
 | 5. Kalshi Read-Only Market Integration | 0/3 | Not started | - |

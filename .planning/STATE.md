@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-06-17T22:40:13.613Z"
-last_activity: 2026-06-17 -- Phase 02 plan 03 complete
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-06-17T22:52:28.811Z"
+last_activity: 2026-06-17 -- Phase 02 marked complete
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
-  completed_plans: 7
-  percent: 14
+  completed_plans: 8
+  percent: 29
 ---
 
 # Project State
@@ -26,10 +26,10 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 ## Current Position
 
-Phase: 02 (leakage-safe-feature-engine) — IN PROGRESS
+Phase: 02 — COMPLETE
 Plan: 4 of 4 complete
-Status: Plan 02-03 complete; ready for 02-04
-Last activity: 2026-06-17 -- Phase 02 plan 03 complete
+Status: Phase 02 complete
+Last activity: 2026-06-17 -- Phase 02 marked complete
 
 Progress: [████████░░] 75%
 
@@ -60,6 +60,7 @@ Progress: [████████░░] 75%
 
 *Updated after Phase 02 plan 02 completion*
 | Phase 02 P03 | 8min | 2 tasks | 6 files |
+| Phase 02 P04 | 4min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Recent decisions affecting current work:
 - [Phase 02]: Attach per-player pre/post Elo and form transition records to the feature build result for later persistence.
 - [Phase 02]: Matched canonical match stats to canonical matches through shared lineage row numbers so Phase 2 could add prior-only stat state without widening the Phase 1 domain contracts.
 - [Phase 02]: Applied the D-09 minimum-sample guard at serve_point_exposure < 50, while keeping incomplete ace history visible by nulling only ace_rate instead of zero-filling aggregate stats.
+- [Phase 02]: Persist feature_differential_rows as enriched A/B snapshot projections plus FEAT-08 deltas. — This keeps player-side snapshots as the single feature truth while still giving downstream consumers one stored model-ready row contract.
+- [Phase 02]: Derive persisted feature_state_audit opponent and cohort provenance from emitted player snapshots. — Audit persistence stays pair-inspectable without widening the runner or recomputing any stateful tennis features during storage.
 
 ### Pending Todos
 
@@ -99,6 +102,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-17T22:40:13.434Z
-Stopped at: Completed 02-03-PLAN.md
-Resume file: .planning/phases/02-leakage-safe-feature-engine/02-04-PLAN.md
+Last session: 2026-06-17T22:52:08.597Z
+Stopped at: Completed 02-04-PLAN.md
+Resume file: None

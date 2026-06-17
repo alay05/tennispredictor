@@ -26,7 +26,7 @@ Requirements for the initial release. Each maps to a roadmap phase.
 - [x] **FEAT-06**: System computes prior-only head-to-head features for two players.
 - [x] **FEAT-07**: System computes match-context features including surface, tournament level, round, best-of, and days rest.
 - [x] **FEAT-08**: System creates player A versus player B differential features for ranking, Elo, surface Elo, form, serve, return, H2H, and rest.
-- [ ] **FEAT-09**: Unit tests prove Elo, ranking, recent form, H2H, and aggregate features exclude the current and future matches.
+- [x] **FEAT-09**: Unit tests prove Elo, ranking, recent form, H2H, and aggregate features exclude the current and future matches.
 
 ### Modeling
 
@@ -131,7 +131,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FEAT-06 | Phase 2 | Complete |
 | FEAT-07 | Phase 2 | Complete |
 | FEAT-08 | Phase 2 | Complete |
-| FEAT-09 | Phase 2 | Pending |
+| FEAT-09 | Phase 2 | Complete |
 | MOD-01 | Phase 3 | Pending |
 | MOD-02 | Phase 3 | Pending |
 | MOD-03 | Phase 3 | Pending |
