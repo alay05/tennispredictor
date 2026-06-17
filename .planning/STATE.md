@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-06-17T22:12:29Z"
-last_activity: 2026-06-17 -- Phase 02 plan 01 complete
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-06-17T22:23:53Z"
+last_activity: 2026-06-17 -- Phase 02 plan 02 complete
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 8
-  completed_plans: 5
-  percent: 63
+  completed_plans: 6
+  percent: 75
 ---
 
 # Project State
@@ -27,26 +27,26 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 ## Current Position
 
 Phase: 02 (leakage-safe-feature-engine) — IN PROGRESS
-Plan: 1 of 4 complete
-Status: Plan 02-01 complete; ready for 02-02
-Last activity: 2026-06-17 -- Phase 02 plan 01 complete
+Plan: 2 of 4 complete
+Status: Plan 02-02 complete; ready for 02-03
+Last activity: 2026-06-17 -- Phase 02 plan 02 complete
 
-Progress: [██████░░░░] 63%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 2 min
-- Total execution time: 0.0 hours
+- Total execution time: 0.1 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation and ATP Data Contracts | 4/4 | 0.0h | N/A |
-| 2. Leakage-Safe Feature Engine | 1/4 | 0.0h | 2 min |
+| 2. Leakage-Safe Feature Engine | 2/4 | 0.1h | 3 min |
 | 3. Modeling, Calibration, and Artifact Registry | 0/4 | 0.0h | N/A |
 | 4. Backtesting and EV Decision Core | 0/3 | 0.0h | N/A |
 | 5. Kalshi Read-Only Market Integration | 0/3 | 0.0h | N/A |
@@ -55,10 +55,10 @@ Progress: [██████░░░░] 63%
 
 **Recent Trend:**
 
-- Last 5 plans: 01-02, 01-03, 01-04, 02-01
-- Trend: Phase 02 execution started
+- Last 5 plans: 01-02, 01-03, 01-04, 02-01, 02-02
+- Trend: Phase 02 stateful feature slice complete
 
-*Updated after Phase 01 completion*
+*Updated after Phase 02 plan 02 completion*
 
 ## Accumulated Context
 
@@ -74,6 +74,8 @@ Recent decisions affecting current work:
 - [Project]: Chronological leakage prevention, calibrated probabilities, and backtesting evidence are phase gates.
 - [Phase 02]: Group same-round matches by `tourney_date` and `round_name` so every cohort member sees the same pre-round baseline.
 - [Phase 02]: Build downstream differential rows from player-side snapshots instead of reconstructing feature values from raw canonical matches.
+- [Phase 02]: Keep same-round snapshots on a frozen cohort baseline, then batch-apply Elo, form, and rest updates after emission.
+- [Phase 02]: Attach per-player pre/post Elo and form transition records to the feature build result for later persistence.
 
 ### Pending Todos
 
@@ -94,6 +96,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-17T22:12:29Z
-Stopped at: Completed 02-01-PLAN.md
-Resume file: .planning/phases/02-leakage-safe-feature-engine/02-02-PLAN.md
+Last session: 2026-06-17T22:23:53Z
+Stopped at: Completed 02-02-PLAN.md
+Resume file: .planning/phases/02-leakage-safe-feature-engine/02-03-PLAN.md

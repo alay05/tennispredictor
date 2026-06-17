@@ -19,9 +19,9 @@ Requirements for the initial release. Each maps to a roadmap phase.
 ### Feature Engine
 
 - [x] **FEAT-01**: System builds features by iterating matches chronologically and emitting pre-match snapshots before updating post-match state.
-- [ ] **FEAT-02**: System maintains overall Elo and hard/clay/grass surface Elo ratings for ATP players.
+- [x] **FEAT-02**: System maintains overall Elo and hard/clay/grass surface Elo ratings for ATP players.
 - [x] **FEAT-03**: System computes ranking, ranking-points, and ranking-change features using only rankings available before match date.
-- [ ] **FEAT-04**: System computes recent-form features for last 5, 10, and 20 prior matches.
+- [x] **FEAT-04**: System computes recent-form features for last 5, 10, and 20 prior matches.
 - [ ] **FEAT-05**: System computes serve and return aggregates from prior matches where Sackmann match stats are available.
 - [ ] **FEAT-06**: System computes prior-only head-to-head features for two players.
 - [x] **FEAT-07**: System computes match-context features including surface, tournament level, round, best-of, and days rest.
@@ -124,9 +124,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FND-05 | Phase 1 | Pending |
 | FND-06 | Phase 1 | Pending |
 | FEAT-01 | Phase 2 | Complete |
-| FEAT-02 | Phase 2 | Pending |
+| FEAT-02 | Phase 2 | Complete |
 | FEAT-03 | Phase 2 | Complete |
-| FEAT-04 | Phase 2 | Pending |
+| FEAT-04 | Phase 2 | Complete |
 | FEAT-05 | Phase 2 | Pending |
 | FEAT-06 | Phase 2 | Pending |
 | FEAT-07 | Phase 2 | Complete |
