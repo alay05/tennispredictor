@@ -131,7 +131,7 @@ def build_feature_snapshots(
     matches: list[CanonicalMatch],
     rankings: list[CanonicalRanking],
     match_stats: list[CanonicalMatchStat] | None = None,
-    feature_version: str = "02-03",
+    feature_version: str = "02-04",
 ) -> FeatureBuildResult:
     player_snapshots: list[PlayerFeatureSnapshot] = []
     differential_rows = []

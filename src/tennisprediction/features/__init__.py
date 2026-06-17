@@ -2,6 +2,7 @@
 
 from tennisprediction.features.differential import build_differential_row
 from tennisprediction.features.ordering import ROUND_PRECEDENCE, build_match_cohorts
+from tennisprediction.features.persistence import persist_feature_build
 from tennisprediction.features.rankings import attach_prior_rankings
 from tennisprediction.features.runner import build_feature_snapshots
 from tennisprediction.features.schemas import (
@@ -19,4 +20,5 @@ __all__ = [
     "build_differential_row",
     "build_match_cohorts",
     "build_feature_snapshots",
+    "persist_feature_build",
 ]

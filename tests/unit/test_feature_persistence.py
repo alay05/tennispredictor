@@ -191,7 +191,7 @@ def _columns(
     *,
     table_name: str,
 ) -> set[str]:
-    rows = connection.execute(f"pragma_table_info('{table_name}')").fetchall()
+    rows = connection.execute(f"pragma table_info('{table_name}')").fetchall()
     return {row[1] for row in rows}
 
 
