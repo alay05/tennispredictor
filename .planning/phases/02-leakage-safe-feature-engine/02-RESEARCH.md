@@ -36,12 +36,12 @@ None — discussion stayed within phase scope.
 |----|-------------|------------------|
 | FEAT-01 | System builds features by iterating matches chronologically and emitting pre-match snapshots before updating post-match state. [CITED: .planning/REQUIREMENTS.md] | Use a cohort-aware runner that emits player-side snapshots first, then applies state updates only after the cohort completes. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
 | FEAT-02 | System maintains overall Elo and hard/clay/grass surface Elo ratings for ATP players. [CITED: .planning/REQUIREMENTS.md] | Keep Elo in a dedicated mutable state store keyed by player and surface, and persist pre/post values for audit. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
-| FEAT-03 | System computes ranking, ranking-points, and ranking-change features using only rankings available before match date. [CITED: .planning/REQUIREMENTS.md] | Use a per-player backward `join_asof` on sorted ranking snapshots; never use nearest or forward lookup. [CITED: https://docs.pola.rs/py-polars/html/reference/dataframe/api/polars.DataFrame.join_asof.html][CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
+| FEAT-03 | System computes ranking, ranking-points, and ranking-change features using only rankings available before match date. [CITED: .planning/REQUIREMENTS.md] | Use a per-player backward `join_asof` on sorted ranking snapshots; never use nearest or forward lookup. Define `ranking_change` as the selected pre-match rank minus the immediately previous available ranking-row rank for that player, and persist the previous ranking date/value inputs for provenance. [CITED: https://docs.pola.rs/py-polars/html/reference/dataframe/api/polars.DataFrame.join_asof.html][CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
 | FEAT-04 | System computes recent-form features for last 5, 10, and 20 prior matches. [CITED: .planning/REQUIREMENTS.md] | Compute prior-only windows from sorted per-player streams using lagged/grouped operations and persist exposure counts. [CITED: https://docs.pola.rs/api/python/dev/reference/expressions/api/polars.Expr.shift.html][CITED: https://docs.pola.rs/user-guide/expressions/window-functions/] |
-| FEAT-05 | System computes serve and return aggregates from prior matches where Sackmann match stats are available. [CITED: .planning/REQUIREMENTS.md] | Derive rates from integer totals and preserve missingness plus sample counts because Sackmann stats are totals with incomplete coverage. [CITED: https://github.com/jeffsackmann/tennis_atp][CITED: https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/matches_data_dictionary.txt][CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
+| FEAT-05 | System computes serve and return aggregates from prior matches where Sackmann match stats are available. [CITED: .planning/REQUIREMENTS.md] | Derive MVP rates only from directly supported integer totals and preserve missingness plus sample counts because Sackmann stats are totals with incomplete coverage; do not add hold/break-style derived aggregates in this phase. [CITED: https://github.com/jeffsackmann/tennis_atp][CITED: https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/matches_data_dictionary.txt][CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
 | FEAT-06 | System computes prior-only head-to-head features for two players. [CITED: .planning/REQUIREMENTS.md] | Maintain symmetric pair state and snapshot it before current-match updates; include counts to expose sparsity. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
-| FEAT-07 | System computes match-context features including surface, tournament level, round, best-of, and days rest. [CITED: .planning/REQUIREMENTS.md] | Treat surface/level/round/best-of as static context from canonical matches and compute rest from prior played dates only. [CITED: src/tennisprediction/domain/models.py][CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
-| FEAT-08 | System creates player A versus player B differential features for ranking, Elo, surface Elo, form, serve, return, H2H, and rest. [CITED: .planning/REQUIREMENTS.md] | Persist player-side snapshots first, then derive differential rows from those persisted contracts instead of recomputing raw state. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
+| FEAT-07 | System computes match-context features including surface, tournament level, round, best-of, and days rest. [CITED: .planning/REQUIREMENTS.md] | Treat surface/level/round/best-of as static context from canonical matches, compute rest from prior played dates only, and centralize one round-precedence map whose unknown tokens fail loudly in tests. [CITED: src/tennisprediction/domain/models.py][CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
+| FEAT-08 | System creates player A versus player B differential features for ranking, Elo, surface Elo, form, serve, return, H2H, and rest. [CITED: .planning/REQUIREMENTS.md] | Persist player-side snapshots first, then derive differential rows from those persisted contracts instead of recomputing raw state; the Phase 2 contract should explicitly expose ranking, ranking-points, `ranking_change`, Elo, surface Elo, recent-form 5/10/20, rest, serve, return, and H2H deltas. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md] |
 | FEAT-09 | Unit tests prove Elo, ranking, recent form, H2H, and aggregate features exclude the current and future matches. [CITED: .planning/REQUIREMENTS.md] | Add invariant tests that compare a match snapshot before and after deleting future rows; historical features must not move. [CITED: https://scikit-learn.org/stable/common_pitfalls.html][CITED: AGENTS.md] |
 </phase_requirements>
 
@@ -376,22 +376,21 @@ def test_future_rows_do_not_change_historical_snapshot(feature_engine, full_hist
 | A2 | A hybrid Polars-plus-runner architecture is preferable to a purely vectorized dataframe pipeline for this phase. [ASSUMED] | Summary / Architecture Patterns | Medium — a different implementation style could still work, but only if it preserves same-round cohort behavior and auditability. |
 | A3 | The recommended pytest file map is the right Wave 0 split for Phase 2 tests. [ASSUMED] | Validation Architecture | Low — filenames can move without changing the required verification coverage. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **What should `ranking_change` mean in the MVP contract?**
-   - What we know: FEAT-03 requires a ranking-change feature, and Sackmann documents that ranking snapshots are keyed by `ranking_date` while match-row rankings are as of `tourney_date` or the most recent prior ranking date. [CITED: .planning/REQUIREMENTS.md][CITED: https://github.com/jeffsackmann/tennis_atp][CITED: https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/matches_data_dictionary.txt]
-   - What's unclear: Whether Phase 2 should model change versus the immediately previous ranking row, versus a fixed horizon such as seven days, or both. [ASSUMED]
-   - Recommendation: Plan `ranking_change` as a dedicated subtask in 02-02 and keep the source dates on every derived value so the definition can evolve without breaking provenance. [ASSUMED]
+1. **`ranking_change` MVP semantics**
+   - Resolution: Define `ranking_change` as the selected pre-match rank minus the immediately previous available ranking-row rank for the same player. Negative values indicate an improved ranking because lower ATP ranks are better. [CITED: .planning/REQUIREMENTS.md][CITED: https://github.com/jeffsackmann/tennis_atp][CITED: https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/matches_data_dictionary.txt]
+   - Required provenance: Persist `previous_ranking_date`, `previous_rank`, and `previous_rank_points` alongside the selected pre-match `rank` and `rank_points` so downstream consumers can audit how the delta was produced. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md]
+   - Missing-history rule: When no previous ranking row exists, keep `ranking_change` and the previous-row provenance fields as `None` rather than inventing a baseline. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md]
 
-2. **Which serve/return aggregates are mandatory for the MVP contract?**
-   - What we know: FEAT-05 requires prior-only serve/return aggregates, and Sackmann stats are integer totals with incomplete coverage. [CITED: .planning/REQUIREMENTS.md][CITED: https://github.com/jeffsackmann/tennis_atp][CITED: https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/matches_data_dictionary.txt]
-   - What's unclear: Whether the MVP should stop at directly supported rates such as first-serve win, second-serve win, and return points won, or also include derived hold/break style aggregates. [ASSUMED]
-   - Recommendation: Plan around totals-backed rates plus exposure counts first, then only add derived rates whose numerators and denominators are explicit in the stored contract. [ASSUMED]
+2. **Serve/return MVP scope**
+   - Resolution: Phase 2 should expose only totals-backed rates whose numerators and denominators already exist in canonical Sackmann match-stat columns. The MVP contract stops at `service_first_won_rate`, `return_first_won_allowed_rate`, and `ace_rate`, plus explicit exposure counts and missingness flags. [CITED: .planning/REQUIREMENTS.md][CITED: https://github.com/jeffsackmann/tennis_atp][CITED: https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/matches_data_dictionary.txt]
+   - Out of MVP: Do not add hold/break-style derived aggregates in this phase because their bookkeeping would expand the feature contract beyond the existing canonical totals-backed scope. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md]
 
-3. **How broad must the round precedence map be in Phase 2?**
-   - What we know: D-03 locks deterministic ordering and D-04 locks shared baselines for effectively concurrent same-round matches. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md]
-   - What's unclear: Which historical round tokens beyond the common ATP main-draw set must be normalized up front. [ASSUMED]
-   - Recommendation: Add a centralized round-order table plus a fixture containing all observed Phase 1 round tokens so unknown codes fail loudly during planning or execution. [ASSUMED]
+3. **Round precedence map breadth**
+   - Resolution: Centralize one `ROUND_PRECEDENCE` table in the ordering module and make it the only source of deterministic round ordering in Phase 2. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md]
+   - Guardrail: Unknown round tokens must raise loudly through dedicated ordering tests instead of silently sorting to the end or defaulting to a guessed precedence. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-CONTEXT.md]
+   - Test expectation: Phase 2 Wave 0 should include `tests/unit/test_feature_ordering.py` so FEAT-07 covers both normal precedence ordering and the fail-loud path for unseen round codes. [CITED: .planning/REQUIREMENTS.md]
 
 ## Environment Availability
 
@@ -442,7 +441,8 @@ Recommended Phase 2 test map [ASSUMED]:
 ### Wave 0 Gaps
 
 - [ ] `tests/unit/test_feature_runner.py` — chronological runner, snapshot-before-update, and same-round cohort cases
-- [ ] `tests/unit/test_feature_rankings.py` — ranking cutoff, ranking source date, and ranking-change cases
+- [ ] `tests/unit/test_feature_ordering.py` — round precedence, same-day ordering, and unknown-round failure cases
+- [ ] `tests/unit/test_feature_rankings.py` — ranking cutoff, previous-ranking provenance, and ranking-change cases
 - [ ] `tests/unit/test_feature_state.py` — Elo, form, serve/return, H2H, and rest state transitions
 - [ ] `tests/unit/test_feature_differential.py` — A/B orientation and reproducible differential row derivation
 - [ ] `tests/unit/test_feature_leakage.py` — future-row deletion invariants and same-cohort reorder invariants
