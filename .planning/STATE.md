@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-06-17T22:23:53Z"
-last_activity: 2026-06-17 -- Phase 02 plan 02 complete
+status: completed
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-06-17T22:40:13.613Z"
+last_activity: 2026-06-17 -- Phase 02 plan 03 complete
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
-  percent: 75
+  completed_plans: 7
+  percent: 14
 ---
 
 # Project State
@@ -27,9 +27,9 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 ## Current Position
 
 Phase: 02 (leakage-safe-feature-engine) — IN PROGRESS
-Plan: 2 of 4 complete
-Status: Plan 02-02 complete; ready for 02-03
-Last activity: 2026-06-17 -- Phase 02 plan 02 complete
+Plan: 4 of 4 complete
+Status: Plan 02-03 complete; ready for 02-04
+Last activity: 2026-06-17 -- Phase 02 plan 03 complete
 
 Progress: [████████░░] 75%
 
@@ -59,6 +59,7 @@ Progress: [████████░░] 75%
 - Trend: Phase 02 stateful feature slice complete
 
 *Updated after Phase 02 plan 02 completion*
+| Phase 02 P03 | 8min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase 02]: Build downstream differential rows from player-side snapshots instead of reconstructing feature values from raw canonical matches.
 - [Phase 02]: Keep same-round snapshots on a frozen cohort baseline, then batch-apply Elo, form, and rest updates after emission.
 - [Phase 02]: Attach per-player pre/post Elo and form transition records to the feature build result for later persistence.
+- [Phase 02]: Matched canonical match stats to canonical matches through shared lineage row numbers so Phase 2 could add prior-only stat state without widening the Phase 1 domain contracts.
+- [Phase 02]: Applied the D-09 minimum-sample guard at serve_point_exposure < 50, while keeping incomplete ace history visible by nulling only ace_rate instead of zero-filling aggregate stats.
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-17T22:23:53Z
-Stopped at: Completed 02-02-PLAN.md
-Resume file: .planning/phases/02-leakage-safe-feature-engine/02-03-PLAN.md
+Last session: 2026-06-17T22:40:13.434Z
+Stopped at: Completed 02-03-PLAN.md
+Resume file: .planning/phases/02-leakage-safe-feature-engine/02-04-PLAN.md

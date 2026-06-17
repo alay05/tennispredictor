@@ -22,8 +22,8 @@ Requirements for the initial release. Each maps to a roadmap phase.
 - [x] **FEAT-02**: System maintains overall Elo and hard/clay/grass surface Elo ratings for ATP players.
 - [x] **FEAT-03**: System computes ranking, ranking-points, and ranking-change features using only rankings available before match date.
 - [x] **FEAT-04**: System computes recent-form features for last 5, 10, and 20 prior matches.
-- [ ] **FEAT-05**: System computes serve and return aggregates from prior matches where Sackmann match stats are available.
-- [ ] **FEAT-06**: System computes prior-only head-to-head features for two players.
+- [x] **FEAT-05**: System computes serve and return aggregates from prior matches where Sackmann match stats are available.
+- [x] **FEAT-06**: System computes prior-only head-to-head features for two players.
 - [x] **FEAT-07**: System computes match-context features including surface, tournament level, round, best-of, and days rest.
 - [x] **FEAT-08**: System creates player A versus player B differential features for ranking, Elo, surface Elo, form, serve, return, H2H, and rest.
 - [ ] **FEAT-09**: Unit tests prove Elo, ranking, recent form, H2H, and aggregate features exclude the current and future matches.
@@ -127,8 +127,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FEAT-02 | Phase 2 | Complete |
 | FEAT-03 | Phase 2 | Complete |
 | FEAT-04 | Phase 2 | Complete |
-| FEAT-05 | Phase 2 | Pending |
-| FEAT-06 | Phase 2 | Pending |
+| FEAT-05 | Phase 2 | Complete |
+| FEAT-06 | Phase 2 | Complete |
 | FEAT-07 | Phase 2 | Complete |
 | FEAT-08 | Phase 2 | Complete |
 | FEAT-09 | Phase 2 | Pending |
