@@ -19,6 +19,7 @@ def build_differential_row(
     player_a_snapshot: PlayerFeatureSnapshot,
     player_b_snapshot: PlayerFeatureSnapshot,
 ) -> FeatureDifferentialRow:
+    h2h_match_count = player_a_snapshot.head_to_head_match_count
     return FeatureDifferentialRow(
         feature_version=player_a_snapshot.feature_version,
         canonical_match_id=player_a_snapshot.canonical_match_id,
@@ -52,5 +53,22 @@ def build_differential_row(
             player_a_snapshot.form_last_20_win_rate,
             player_b_snapshot.form_last_20_win_rate,
         ),
+        service_first_won_rate_diff=_float_diff(
+            player_a_snapshot.service_first_won_rate,
+            player_b_snapshot.service_first_won_rate,
+        ),
+        return_first_won_allowed_rate_diff=_float_diff(
+            player_a_snapshot.return_first_won_allowed_rate,
+            player_b_snapshot.return_first_won_allowed_rate,
+        ),
+        ace_rate_diff=_float_diff(
+            player_a_snapshot.ace_rate,
+            player_b_snapshot.ace_rate,
+        ),
+        h2h_win_rate_diff=_float_diff(
+            player_a_snapshot.head_to_head_win_rate,
+            player_b_snapshot.head_to_head_win_rate,
+        ),
+        h2h_match_count=h2h_match_count,
         lineage=player_a_snapshot.lineage,
     )

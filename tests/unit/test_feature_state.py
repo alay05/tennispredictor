@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-from tennisprediction.features.state import PlayerStateAuditRecord
 
 from tennisprediction.domain.models import (
     CanonicalMatch,
@@ -10,6 +9,7 @@ from tennisprediction.domain.models import (
     SourceLineage,
 )
 from tennisprediction.features.runner import build_feature_snapshots
+from tennisprediction.features.state import PlayerStateAuditRecord
 
 
 def _lineage(*, file_name: str, row_number: int) -> SourceLineage:
@@ -330,6 +330,14 @@ def test_build_feature_snapshots_uses_prior_match_stats_only() -> None:
                 loser_id=3,
                 row_number=5,
             ),
+            _match(
+                match_id="match:synthetic:example-open:20240130:5",
+                tourney_date="20240130",
+                surface="Hard",
+                winner_id=1,
+                loser_id=4,
+                row_number=6,
+            ),
         ],
         rankings=[
             _ranking(player_id=player_id, ranking_date="20240101", rank=rank, row_number=row_number)
@@ -337,6 +345,7 @@ def test_build_feature_snapshots_uses_prior_match_stats_only() -> None:
                 (1, 8, 2),
                 (2, 15, 3),
                 (3, 25, 4),
+                (4, 30, 5),
             ]
         ],
         match_stats=[
@@ -380,6 +389,16 @@ def test_build_feature_snapshots_uses_prior_match_stats_only() -> None:
                 serve_points_player2=18,
                 row_number=5,
             ),
+            _match_stat(
+                source_match_id=1005,
+                first_won_player1=25,
+                first_won_player2=22,
+                ace_player1=6,
+                ace_player2=3,
+                serve_points_player1=38,
+                serve_points_player2=40,
+                row_number=6,
+            ),
         ],
         feature_version="v0-test",
     )
@@ -404,6 +423,11 @@ def test_build_feature_snapshots_uses_prior_match_stats_only() -> None:
         match_id="match:synthetic:example-open:20240125:4",
         player_id=1,
     )
+    missing_ace_history_snapshot = _snapshot_for_match(
+        result,
+        match_id="match:synthetic:example-open:20240130:5",
+        player_id=1,
+    )
 
     assert opening_snapshot.service_first_won_rate is None
     assert opening_snapshot.return_first_won_allowed_rate is None
@@ -419,9 +443,9 @@ def test_build_feature_snapshots_uses_prior_match_stats_only() -> None:
     assert opening_snapshot.head_to_head_missing is True
     assert opening_snapshot.head_to_head_low_sample is False
 
-    assert rematch_snapshot.service_first_won_rate is None
-    assert rematch_snapshot.return_first_won_allowed_rate is None
-    assert rematch_snapshot.ace_rate is None
+    assert rematch_snapshot.service_first_won_rate == pytest.approx(35 / 50)
+    assert rematch_snapshot.return_first_won_allowed_rate == pytest.approx(28 / 48)
+    assert rematch_snapshot.ace_rate == pytest.approx(8 / 50)
     assert rematch_snapshot.stats_match_count == 1
     assert rematch_snapshot.serve_point_exposure == 50
     assert rematch_snapshot.stats_missing is False
@@ -448,9 +472,23 @@ def test_build_feature_snapshots_uses_prior_match_stats_only() -> None:
     assert h2h_snapshot.head_to_head_low_sample is False
 
     assert sparse_snapshot.service_first_won_rate == pytest.approx((35 + 33 + 40) / (50 + 52 + 60))
-    assert sparse_snapshot.return_first_won_allowed_rate == pytest.approx((28 + 30 + 34) / (48 + 45 + 55))
-    assert sparse_snapshot.ace_rate is None
+    assert sparse_snapshot.return_first_won_allowed_rate == pytest.approx(
+        (28 + 30 + 34) / (48 + 45 + 55)
+    )
+    assert sparse_snapshot.ace_rate == pytest.approx((8 + 7 + 10) / (50 + 52 + 60))
     assert sparse_snapshot.stats_match_count == 3
     assert sparse_snapshot.serve_point_exposure == 162
     assert sparse_snapshot.stats_missing is False
     assert sparse_snapshot.stats_low_sample is False
+
+    assert missing_ace_history_snapshot.service_first_won_rate == pytest.approx(
+        (35 + 33 + 40 + 12) / (50 + 52 + 60 + 20)
+    )
+    assert missing_ace_history_snapshot.return_first_won_allowed_rate == pytest.approx(
+        (28 + 30 + 34 + 10) / (48 + 45 + 55 + 18)
+    )
+    assert missing_ace_history_snapshot.ace_rate is None
+    assert missing_ace_history_snapshot.stats_match_count == 4
+    assert missing_ace_history_snapshot.serve_point_exposure == 182
+    assert missing_ace_history_snapshot.stats_missing is False
+    assert missing_ace_history_snapshot.stats_low_sample is False

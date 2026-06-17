@@ -38,6 +38,19 @@ class PlayerFeatureSnapshot:
     form_last_5_count: int
     form_last_10_count: int
     form_last_20_count: int
+    service_first_won_rate: float | None
+    return_first_won_allowed_rate: float | None
+    ace_rate: float | None
+    stats_match_count: int
+    serve_point_exposure: int
+    stats_missing: bool
+    stats_low_sample: bool
+    head_to_head_match_count: int
+    head_to_head_wins: int
+    head_to_head_losses: int
+    head_to_head_win_rate: float | None
+    head_to_head_missing: bool
+    head_to_head_low_sample: bool
     lineage: SourceLineage
 
 
@@ -63,6 +76,11 @@ class FeatureDifferentialRow:
     form_last_5_win_rate_diff: float | None
     form_last_10_win_rate_diff: float | None
     form_last_20_win_rate_diff: float | None
+    service_first_won_rate_diff: float | None
+    return_first_won_allowed_rate_diff: float | None
+    ace_rate_diff: float | None
+    h2h_win_rate_diff: float | None
+    h2h_match_count: int
     lineage: SourceLineage
 
 
