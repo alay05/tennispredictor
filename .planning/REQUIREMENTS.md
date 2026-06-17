@@ -18,14 +18,14 @@ Requirements for the initial release. Each maps to a roadmap phase.
 
 ### Feature Engine
 
-- [ ] **FEAT-01**: System builds features by iterating matches chronologically and emitting pre-match snapshots before updating post-match state.
+- [x] **FEAT-01**: System builds features by iterating matches chronologically and emitting pre-match snapshots before updating post-match state.
 - [ ] **FEAT-02**: System maintains overall Elo and hard/clay/grass surface Elo ratings for ATP players.
-- [ ] **FEAT-03**: System computes ranking, ranking-points, and ranking-change features using only rankings available before match date.
+- [x] **FEAT-03**: System computes ranking, ranking-points, and ranking-change features using only rankings available before match date.
 - [ ] **FEAT-04**: System computes recent-form features for last 5, 10, and 20 prior matches.
 - [ ] **FEAT-05**: System computes serve and return aggregates from prior matches where Sackmann match stats are available.
 - [ ] **FEAT-06**: System computes prior-only head-to-head features for two players.
-- [ ] **FEAT-07**: System computes match-context features including surface, tournament level, round, best-of, and days rest.
-- [ ] **FEAT-08**: System creates player A versus player B differential features for ranking, Elo, surface Elo, form, serve, return, H2H, and rest.
+- [x] **FEAT-07**: System computes match-context features including surface, tournament level, round, best-of, and days rest.
+- [x] **FEAT-08**: System creates player A versus player B differential features for ranking, Elo, surface Elo, form, serve, return, H2H, and rest.
 - [ ] **FEAT-09**: Unit tests prove Elo, ranking, recent form, H2H, and aggregate features exclude the current and future matches.
 
 ### Modeling
@@ -123,14 +123,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FND-04 | Phase 1 | Pending |
 | FND-05 | Phase 1 | Pending |
 | FND-06 | Phase 1 | Pending |
-| FEAT-01 | Phase 2 | Pending |
+| FEAT-01 | Phase 2 | Complete |
 | FEAT-02 | Phase 2 | Pending |
-| FEAT-03 | Phase 2 | Pending |
+| FEAT-03 | Phase 2 | Complete |
 | FEAT-04 | Phase 2 | Pending |
 | FEAT-05 | Phase 2 | Pending |
 | FEAT-06 | Phase 2 | Pending |
-| FEAT-07 | Phase 2 | Pending |
-| FEAT-08 | Phase 2 | Pending |
+| FEAT-07 | Phase 2 | Complete |
+| FEAT-08 | Phase 2 | Complete |
 | FEAT-09 | Phase 2 | Pending |
 | MOD-01 | Phase 3 | Pending |
 | MOD-02 | Phase 3 | Pending |
@@ -167,6 +167,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OPS-06 | Phase 7 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 48 total
 - Mapped to phases: 48
 - Unmapped: 0
