@@ -4,6 +4,11 @@ import logging
 from pathlib import Path
 
 import pytest
+from typer.testing import CliRunner
+
+from tennisprediction.cli import app
+
+runner = CliRunner()
 
 
 def test_settings_use_repo_local_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -45,3 +50,10 @@ def test_configure_logging_returns_project_logger(monkeypatch: pytest.MonkeyPatc
 
     assert logger.name == "tennisprediction"
     assert logger.level == logging.DEBUG
+
+
+def test_cli_version_bootstraps_successfully() -> None:
+    result = runner.invoke(app, ["version"])
+
+    assert result.exit_code == 0
+    assert "0.1.0" in result.stdout

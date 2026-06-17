@@ -43,7 +43,7 @@ class Settings(BaseSettings):
         return resolved
 
     @model_validator(mode="after")
-    def ensure_repo_local_paths(self) -> "Settings":
+    def ensure_repo_local_paths(self) -> Settings:
         for field_name in REPO_PATH_FIELDS:
             resolved_path = self._resolve_repo_path(getattr(self, field_name))
             object.__setattr__(self, field_name, resolved_path)
