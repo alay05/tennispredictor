@@ -75,6 +75,7 @@ def _match_stat(
     serve_points_player1: int | None,
     serve_points_player2: int | None,
     row_number: int,
+    file_name: str = "atp_matchstats_2024.csv",
 ) -> CanonicalMatchStat:
     return CanonicalMatchStat(
         canonical_match_stat_id=f"match-stat:sackmann:{source_match_id}",
@@ -85,7 +86,7 @@ def _match_stat(
         ace_player2=ace_player2,
         serve_points_player1=serve_points_player1,
         serve_points_player2=serve_points_player2,
-        lineage=_lineage(file_name="atp_matchstats_2024.csv", row_number=row_number),
+        lineage=_lineage(file_name=file_name, row_number=row_number),
     )
 
 
@@ -101,6 +102,81 @@ def _snapshot_for_match(
         if snapshot.canonical_match_id == match_id
         and snapshot.canonical_player_id == f"player:sackmann:{player_id}"
     )
+
+
+def _cross_file_row_number_collision_history() -> tuple[
+    list[CanonicalMatch],
+    list[CanonicalRanking],
+    list[CanonicalMatchStat],
+]:
+    matches = [
+        _match(
+            match_id="match:synthetic:example-open:20240101:1",
+            tourney_date="20240101",
+            surface="Hard",
+            winner_id=1,
+            loser_id=2,
+            row_number=2,
+        ),
+        _match(
+            match_id="match:synthetic:example-open:20240108:2",
+            tourney_date="20240108",
+            surface="Hard",
+            winner_id=2,
+            loser_id=1,
+            row_number=3,
+        ),
+        _match(
+            match_id="match:synthetic:example-open:20240115:3",
+            tourney_date="20240115",
+            surface="Hard",
+            winner_id=1,
+            loser_id=2,
+            row_number=4,
+        ),
+    ]
+    rankings = [
+        _ranking(player_id=1, ranking_date="20240101", rank=8, row_number=2),
+        _ranking(player_id=2, ranking_date="20240101", rank=18, row_number=3),
+        _ranking(player_id=1, ranking_date="20240108", rank=7, row_number=4),
+        _ranking(player_id=2, ranking_date="20240108", rank=16, row_number=5),
+    ]
+    match_stats = [
+        _match_stat(
+            source_match_id=1001,
+            first_won_player1=35,
+            first_won_player2=28,
+            ace_player1=8,
+            ace_player2=4,
+            serve_points_player1=50,
+            serve_points_player2=48,
+            row_number=2,
+            file_name="atp_matchstats_2024.csv",
+        ),
+        _match_stat(
+            source_match_id=1002,
+            first_won_player1=30,
+            first_won_player2=33,
+            ace_player1=5,
+            ace_player2=7,
+            serve_points_player1=45,
+            serve_points_player2=52,
+            row_number=3,
+            file_name="atp_matchstats_2024.csv",
+        ),
+        _match_stat(
+            source_match_id=2099,
+            first_won_player1=14,
+            first_won_player2=39,
+            ace_player1=1,
+            ace_player2=12,
+            serve_points_player1=70,
+            serve_points_player2=60,
+            row_number=2,
+            file_name="atp_matchstats_2025.csv",
+        ),
+    ]
+    return matches, rankings, match_stats
 
 
 def test_build_feature_snapshots_uses_pre_match_elo_and_surface_elo() -> None:
@@ -492,3 +568,27 @@ def test_build_feature_snapshots_uses_prior_match_stats_only() -> None:
     assert missing_ace_history_snapshot.serve_point_exposure == 182
     assert missing_ace_history_snapshot.stats_missing is False
     assert missing_ace_history_snapshot.stats_low_sample is False
+
+
+def test_build_feature_snapshots_keeps_prior_stats_bound_to_source_file_path_and_row_number(
+) -> None:
+    matches, rankings, match_stats = _cross_file_row_number_collision_history()
+
+    result = build_feature_snapshots(
+        matches=matches,
+        rankings=rankings,
+        match_stats=match_stats,
+        feature_version="02-05-test",
+    )
+
+    target_snapshot = _snapshot_for_match(
+        result,
+        match_id="match:synthetic:example-open:20240115:3",
+        player_id=1,
+    )
+
+    assert target_snapshot.service_first_won_rate == pytest.approx((35 + 33) / (50 + 52))
+    assert target_snapshot.return_first_won_allowed_rate == pytest.approx((28 + 30) / (48 + 45))
+    assert target_snapshot.ace_rate == pytest.approx((8 + 7) / (50 + 52))
+    assert target_snapshot.stats_match_count == 2
+    assert target_snapshot.serve_point_exposure == 102

@@ -73,6 +73,7 @@ def _match_stat(
     serve_points_player1: int,
     serve_points_player2: int,
     row_number: int,
+    file_name: str = "atp_matchstats_2024.csv",
 ) -> CanonicalMatchStat:
     return CanonicalMatchStat(
         canonical_match_stat_id=f"match-stat:sackmann:{source_match_id}",
@@ -83,11 +84,15 @@ def _match_stat(
         ace_player2=ace_player2,
         serve_points_player1=serve_points_player1,
         serve_points_player2=serve_points_player2,
-        lineage=_lineage(file_name="atp_matchstats_2024.csv", row_number=row_number),
+        lineage=_lineage(file_name=file_name, row_number=row_number),
     )
 
 
-def _synthetic_history(*, reorder_same_cohort: bool = False) -> tuple[
+def _synthetic_history(
+    *,
+    reorder_same_cohort: bool = False,
+    include_cross_file_collision: bool = False,
+) -> tuple[
     list[CanonicalMatch],
     list[CanonicalRanking],
     list[CanonicalMatchStat],
@@ -198,6 +203,20 @@ def _synthetic_history(*, reorder_same_cohort: bool = False) -> tuple[
             row_number=6,
         ),
     ]
+    if include_cross_file_collision:
+        match_stats.append(
+            _match_stat(
+                source_match_id=205,
+                first_won_player1=11,
+                first_won_player2=39,
+                ace_player1=1,
+                ace_player2=12,
+                serve_points_player1=70,
+                serve_points_player2=60,
+                row_number=2,
+                file_name="atp_matchstats_2025.csv",
+            )
+        )
     return matches, rankings, match_stats
 
 
@@ -259,6 +278,30 @@ def _differential_contract(row: object) -> tuple[object, ...]:
         row.ace_rate_diff,
         row.h2h_win_rate_diff,
         row.h2h_match_count,
+    )
+
+
+def _aggregate_snapshot_contract(snapshot: object) -> tuple[object, ...]:
+    return (
+        snapshot.service_first_won_rate,
+        snapshot.return_first_won_allowed_rate,
+        snapshot.ace_rate,
+        snapshot.stats_match_count,
+        snapshot.serve_point_exposure,
+        snapshot.stats_missing,
+        snapshot.stats_low_sample,
+    )
+
+
+def _aggregate_differential_contract(row: object) -> tuple[object, ...]:
+    return (
+        row.player_a_service_first_won_rate,
+        row.player_b_service_first_won_rate,
+        row.player_a_serve_point_exposure,
+        row.player_b_serve_point_exposure,
+        row.service_first_won_rate_diff,
+        row.return_first_won_allowed_rate_diff,
+        row.ace_rate_diff,
     )
 
 
@@ -347,4 +390,39 @@ def test_build_feature_snapshots_is_invariant_to_same_cohort_reordering() -> Non
         _differential_by_match(canonical_result, match_id=target_match_id)
     ) == _differential_contract(
         _differential_by_match(reordered_result, match_id=target_match_id)
+    )
+
+
+def test_build_feature_snapshots_is_invariant_to_cross_file_row_number_collisions() -> None:
+    matches, rankings, clean_match_stats = _synthetic_history()
+    _, _, colliding_match_stats = _synthetic_history(include_cross_file_collision=True)
+
+    clean_result = build_feature_snapshots(
+        matches=matches,
+        rankings=rankings,
+        match_stats=clean_match_stats,
+        feature_version="02-05-test",
+    )
+    colliding_result = build_feature_snapshots(
+        matches=matches,
+        rankings=rankings,
+        match_stats=colliding_match_stats,
+        feature_version="02-05-test",
+    )
+
+    target_match_id = "match:synthetic:example-open:20240115:3"
+    assert _aggregate_snapshot_contract(
+        _snapshot_by_key(clean_result, match_id=target_match_id, player_id=1, side="A")
+    ) == _aggregate_snapshot_contract(
+        _snapshot_by_key(colliding_result, match_id=target_match_id, player_id=1, side="A")
+    )
+    assert _aggregate_snapshot_contract(
+        _snapshot_by_key(clean_result, match_id=target_match_id, player_id=2, side="B")
+    ) == _aggregate_snapshot_contract(
+        _snapshot_by_key(colliding_result, match_id=target_match_id, player_id=2, side="B")
+    )
+    assert _aggregate_differential_contract(
+        _differential_by_match(clean_result, match_id=target_match_id)
+    ) == _aggregate_differential_contract(
+        _differential_by_match(colliding_result, match_id=target_match_id)
     )

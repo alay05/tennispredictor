@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import duckdb
+import pytest
 
 from tennisprediction.domain.models import (
     CanonicalMatch,
@@ -78,6 +79,7 @@ def _match_stat(
     serve_points_player1: int,
     serve_points_player2: int,
     row_number: int,
+    file_name: str = "atp_matchstats_2024.csv",
 ) -> CanonicalMatchStat:
     return CanonicalMatchStat(
         canonical_match_stat_id=f"match-stat:sackmann:{source_match_id}",
@@ -88,11 +90,11 @@ def _match_stat(
         ace_player2=ace_player2,
         serve_points_player1=serve_points_player1,
         serve_points_player2=serve_points_player2,
-        lineage=_lineage(file_name="atp_matchstats_2024.csv", row_number=row_number),
+        lineage=_lineage(file_name=file_name, row_number=row_number),
     )
 
 
-def _synthetic_history() -> tuple[
+def _synthetic_history(*, include_cross_file_collision: bool = False) -> tuple[
     list[CanonicalMatch],
     list[CanonicalRanking],
     list[CanonicalMatchStat],
@@ -183,6 +185,20 @@ def _synthetic_history() -> tuple[
             row_number=5,
         ),
     ]
+    if include_cross_file_collision:
+        match_stats.append(
+            _match_stat(
+                source_match_id=204,
+                first_won_player1=14,
+                first_won_player2=39,
+                ace_player1=1,
+                ace_player2=12,
+                serve_points_player1=70,
+                serve_points_player2=60,
+                row_number=2,
+                file_name="atp_matchstats_2025.csv",
+            )
+        )
     return matches, rankings, match_stats
 
 
@@ -350,5 +366,41 @@ def test_persist_feature_build_writes_snapshot_row_and_audit_tables(tmp_path: Pa
                 "QF",
             ),
         ]
+    finally:
+        connection.close()
+
+
+def test_persist_feature_build_preserves_collision_fixture_stat_identity(tmp_path: Path) -> None:
+    matches, rankings, match_stats = _synthetic_history(include_cross_file_collision=True)
+    feature_build = build_feature_snapshots(
+        matches=matches,
+        rankings=rankings,
+        match_stats=match_stats,
+        feature_version="02-05-test",
+    )
+
+    database_path = tmp_path / "collision-features.duckdb"
+    persisted_path = persist_feature_build(feature_build, database_path=database_path)
+
+    connection = duckdb.connect(str(persisted_path))
+    try:
+        persisted_row = connection.execute(
+            """
+            select
+                player_a_service_first_won_rate,
+                player_b_service_first_won_rate,
+                player_a_serve_point_exposure,
+                player_b_serve_point_exposure,
+                service_first_won_rate_diff
+            from feature_differential_rows
+            where canonical_match_id = 'match:synthetic:example-open:20240115:3'
+            """
+        ).fetchone()
+        assert persisted_row is not None
+        assert persisted_row[0] == pytest.approx((28 + 26) / (38 + 35))
+        assert persisted_row[1] == pytest.approx((24 + 27) / (36 + 37))
+        assert persisted_row[2] == 73
+        assert persisted_row[3] == 73
+        assert persisted_row[4] == pytest.approx(((28 + 26) / (38 + 35)) - ((24 + 27) / (36 + 37)))
     finally:
         connection.close()
