@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-06-17T22:52:28.811Z"
+status: verifying
+stopped_at: Completed 02-05-PLAN.md
+last_updated: "2026-06-18T21:11:10.349Z"
 last_activity: 2026-06-17 -- Phase 02 marked complete
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 9
+  completed_plans: 9
   percent: 29
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 Phase: 02 — COMPLETE
 Plan: 4 of 4 complete
-Status: Phase 02 complete
+Status: Phase complete — ready for verification
 Last activity: 2026-06-17 -- Phase 02 marked complete
 
 Progress: [████████░░] 75%
@@ -61,6 +61,7 @@ Progress: [████████░░] 75%
 *Updated after Phase 02 plan 02 completion*
 | Phase 02 P03 | 8min | 2 tasks | 6 files |
 | Phase 02 P04 | 4min | 2 tasks | 5 files |
+| Phase 02 P05 | 2min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 - [Phase 02]: Applied the D-09 minimum-sample guard at serve_point_exposure < 50, while keeping incomplete ace history visible by nulling only ace_rate instead of zero-filling aggregate stats.
 - [Phase 02]: Persist feature_differential_rows as enriched A/B snapshot projections plus FEAT-08 deltas. — This keeps player-side snapshots as the single feature truth while still giving downstream consumers one stored model-ready row contract.
 - [Phase 02]: Derive persisted feature_state_audit opponent and cohort provenance from emitted player snapshots. — Audit persistence stays pair-inspectable without widening the runner or recomputing any stateful tennis features during storage.
+- [Phase 02]: Resolve match-stat lookups with a source-lineage key derived from the matching atp_matchstats file and source row number.
+- [Phase 02]: Use one duplicate-row-number fixture across state, leakage, and persistence so FEAT-09 covers the real multi-file stat-collision path.
 
 ### Pending Todos
 
@@ -102,6 +105,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-17T22:52:08.597Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-06-18T21:11:10.344Z
+Stopped at: Completed 02-05-PLAN.md
 Resume file: None
