@@ -18,7 +18,7 @@ v1 builds an ATP-only, leakage-safe prediction and Kalshi EV detection workflow 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation and ATP Data Contracts** - Establish the typed project, Sackmann source lineage, ATP-only scope rules, and canonical data tables.
-- [x] **Phase 2: Leakage-Safe Feature Engine** - Produce chronological pre-match feature snapshots with leakage tests as a phase gate. (completed 2026-06-17)
+- [x] **Phase 2: Leakage-Safe Feature Engine** - Produce chronological pre-match feature snapshots with leakage tests as a phase gate. (completed 2026-06-18)
 - [ ] **Phase 3: Modeling, Calibration, and Artifact Registry** - Train benchmark and production-candidate models with calibrated probabilities and reproducible artifacts.
 - [ ] **Phase 4: Backtesting and EV Decision Core** - Replay predictions and EV decisions with provenance-aware betting evidence.
 - [ ] **Phase 5: Kalshi Read-Only Market Integration** - Collect and persist Kalshi-only market, detail, and orderbook snapshots without execution surfaces.
@@ -202,7 +202,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and ATP Data Contracts | 4/4 | Complete | 2026-06-16 |
-| 2. Leakage-Safe Feature Engine | 5/5 | Complete   | 2026-06-18 |
+| 2. Leakage-Safe Feature Engine | 5/5 | Complete    | 2026-06-18 |
 | 3. Modeling, Calibration, and Artifact Registry | 0/4 | Not started | - |
 | 4. Backtesting and EV Decision Core | 0/3 | Not started | - |
 | 5. Kalshi Read-Only Market Integration | 0/3 | Not started | - |
