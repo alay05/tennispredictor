@@ -10,9 +10,11 @@ from tennisprediction.features.schemas import (
 )
 from tennisprediction.features.state import (
     HeadToHeadState,
+    MatchStatSourceKey,
     MatchStatAggregateState,
     PlayerFeatureState,
     apply_match_result_batch,
+    build_match_stat_source_key,
     build_pre_match_head_to_head_snapshot,
     build_pre_match_snapshot,
     build_pre_match_stat_snapshot,
@@ -119,10 +121,15 @@ def _build_player_snapshot(
 
 def _index_match_stats(
     match_stats: list[CanonicalMatchStat],
-) -> dict[int, CanonicalMatchStat]:
-    indexed: dict[int, CanonicalMatchStat] = {}
+) -> dict[MatchStatSourceKey, CanonicalMatchStat]:
+    indexed: dict[MatchStatSourceKey, CanonicalMatchStat] = {}
     for match_stat in match_stats:
-        indexed[match_stat.lineage.source_row_number] = match_stat
+        indexed[
+            build_match_stat_source_key(
+                source_file_path=match_stat.lineage.source_file_path,
+                source_row_number=match_stat.lineage.source_row_number,
+            )
+        ] = match_stat
     return indexed
 
 
@@ -139,7 +146,7 @@ def build_feature_snapshots(
     player_states: dict[str, PlayerFeatureState] = {}
     match_stat_states: dict[str, MatchStatAggregateState] = {}
     head_to_head_states: dict[tuple[str, str], HeadToHeadState] = {}
-    match_stats_by_row = _index_match_stats(match_stats or [])
+    match_stats_by_source_key = _index_match_stats(match_stats or [])
     for cohort in build_match_cohorts(matches):
         for match in cohort:
             player_a_snapshot = _build_player_snapshot(
@@ -172,7 +179,7 @@ def build_feature_snapshots(
             player_states=player_states,
             match_stat_states=match_stat_states,
             head_to_head_states=head_to_head_states,
-            match_stats_by_row=match_stats_by_row,
+            match_stats_by_source_key=match_stats_by_source_key,
         )
         state_audit_records.extend(cohort_audit_records)
 

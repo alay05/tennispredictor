@@ -11,6 +11,7 @@ ELO_K_FACTOR = 32.0
 FORM_WINDOW_SIZES = (5, 10, 20)
 MIN_STATS_SERVE_POINT_EXPOSURE = 50
 MIN_HEAD_TO_HEAD_MATCHES = 2
+MatchStatSourceKey = tuple[str, int]
 
 
 @dataclass(frozen=True)
@@ -495,13 +496,36 @@ def _build_post_head_to_head_state(
     )
 
 
+def build_match_stat_source_key(
+    *,
+    source_file_path: str,
+    source_row_number: int,
+) -> MatchStatSourceKey:
+    return (source_file_path, source_row_number)
+
+
+def _match_stats_file_path(source_file_path: str) -> str:
+    if source_file_path.startswith("atp_matches_"):
+        return source_file_path.replace("atp_matches_", "atp_matchstats_", 1)
+    return source_file_path
+
+
+def match_stat_source_key_for_match(match: CanonicalMatch) -> MatchStatSourceKey:
+    # Canonical matches come from `atp_matches_*` files while stat rows live in
+    # the corresponding `atp_matchstats_*` files with the same source row number.
+    return build_match_stat_source_key(
+        source_file_path=_match_stats_file_path(match.lineage.source_file_path),
+        source_row_number=match.lineage.source_row_number,
+    )
+
+
 def apply_match_result_batch(
     *,
     matches: list[CanonicalMatch],
     player_states: dict[str, PlayerFeatureState],
     match_stat_states: dict[str, MatchStatAggregateState],
     head_to_head_states: dict[tuple[str, str], HeadToHeadState],
-    match_stats_by_row: dict[int, CanonicalMatchStat],
+    match_stats_by_source_key: dict[MatchStatSourceKey, CanonicalMatchStat],
 ) -> tuple[
     dict[str, PlayerFeatureState],
     dict[str, MatchStatAggregateState],
@@ -625,7 +649,7 @@ def apply_match_result_batch(
             )
         )
 
-        match_stat = match_stats_by_row.get(match.lineage.source_row_number)
+        match_stat = match_stats_by_source_key.get(match_stat_source_key_for_match(match))
         if match_stat is not None:
             winner_stat_state = get_match_stat_state(
                 canonical_player_id=winner_id,

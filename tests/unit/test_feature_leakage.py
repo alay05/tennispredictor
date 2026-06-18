@@ -295,10 +295,6 @@ def _aggregate_snapshot_contract(snapshot: object) -> tuple[object, ...]:
 
 def _aggregate_differential_contract(row: object) -> tuple[object, ...]:
     return (
-        row.player_a_service_first_won_rate,
-        row.player_b_service_first_won_rate,
-        row.player_a_serve_point_exposure,
-        row.player_b_serve_point_exposure,
         row.service_first_won_rate_diff,
         row.return_first_won_allowed_rate_diff,
         row.ace_rate_diff,
