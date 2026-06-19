@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 02 verified and complete
-last_updated: "2026-06-18T21:15:18Z"
-last_activity: 2026-06-18 -- Phase 02 verified complete after gap closure
+status: executing
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-06-19T02:37:47.445Z"
+last_activity: 2026-06-18 -- completed 03-01 frozen modeling dataset materialization and split manifest slice
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 13
+  completed_plans: 10
   percent: 29
 ---
 
@@ -27,17 +27,17 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 ## Current Position
 
 Phase: 03
-Plan: Not started
-Status: Phase 02 complete and verified; ready for Phase 03 planning
-Last activity: 2026-06-18 -- Phase 02 verified complete after gap closure
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-06-18 -- completed 03-01 frozen modeling dataset materialization and split manifest slice
 
-Progress: [████████░░] 75%
+Progress: [████████░░] 77%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 2 min
 - Total execution time: 0.1 hours
 
@@ -47,15 +47,15 @@ Progress: [████████░░] 75%
 |-------|-------|-------|----------|
 | 1. Foundation and ATP Data Contracts | 4/4 | 0.0h | N/A |
 | 2. Leakage-Safe Feature Engine | 5/5 | 0.1h | 3 min |
-| 3. Modeling, Calibration, and Artifact Registry | 0/4 | 0.0h | N/A |
+| 3. Modeling, Calibration, and Artifact Registry | 1/4 | 0.1h | 4 min |
 | 4. Backtesting and EV Decision Core | 0/3 | 0.0h | N/A |
 | 5. Kalshi Read-Only Market Integration | 0/3 | 0.0h | N/A |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | 0.0h | N/A |
 | 7. Alerts and Operational Hardening | 0/4 | 0.0h | N/A |
 **Recent Trend:**
 
-- Last 5 plans: 02-01, 02-02, 02-03, 02-04, 02-05
-- Trend: Phase 02 completed after gap-closure verification
+- Last 5 plans: 02-02, 02-03, 02-04, 02-05, 03-01
+- Trend: Phase 03 started with frozen modeling dataset and split-manifest delivery
 
 ## Accumulated Context
 
@@ -79,6 +79,8 @@ Recent decisions affecting current work:
 - [Phase 02]: Derive persisted feature_state_audit opponent and cohort provenance from emitted player snapshots. — Audit persistence stays pair-inspectable without widening the runner or recomputing any stateful tennis features during storage.
 - [Phase 02]: Resolve match-stat lookups with a source-lineage key derived from the matching atp_matchstats file and source row number.
 - [Phase 02]: Use one duplicate-row-number fixture across state, leakage, and persistence so FEAT-09 covers the real multi-file stat-collision path.
+- [Phase 03]: Modeling rows carry row-level lineage metadata plus a feature_values dictionary keyed by one shared ordered feature-column list so later training code can reuse persisted Phase 02 columns without re-deriving them.
+- [Phase 03]: Split manifests freeze exact ordered canonical_match_id memberships and sha256 hashes, and split boundary dates must resolve to real dataset endpoints.
 
 ### Pending Todos
 
@@ -99,6 +101,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-18T21:15:18Z
-Stopped at: Phase 02 verification passed (8/8 must-haves)
+Last session: 2026-06-19T02:37:47.435Z
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None
