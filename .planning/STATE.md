@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
+status: verifying
 stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-06-19T14:13:19.173Z"
+last_updated: "2026-06-19T14:27:55.739Z"
 last_activity: 2026-06-19 -- completed 03-03 calibrated XGBoost candidate and probability metric surface slice
 progress:
   total_phases: 7
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 13
-  completed_plans: 12
-  percent: 92
+  completed_plans: 13
+  percent: 43
 ---
 
 # Project State
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 Phase: 03
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-19 -- completed 03-03 calibrated XGBoost candidate and probability metric surface slice
 
 Progress: [█████████░] 92%
@@ -59,6 +59,7 @@ Progress: [█████████░] 92%
 
 | Phase 03 P02 | 5min | 3 tasks | 6 files |
 | Phase 03 P03 | 9min | 2 tasks | 7 files |
+| Phase 03 P04 | 6min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,9 @@ Recent decisions affecting current work:
 - [Phase 03]: The XGBoost candidate reserves only the trailing 15% of frozen train memberships for fit-time early stopping and records fit/eval membership hashes in fit metadata.
 - [Phase 03]: Calibrated prediction rows preserve row-level downstream context including match identity, surface, tournament level, rank inputs, target, raw probability, calibrated probability, and favored-side probability.
 - [Phase 03]: The shared probability metrics surface owns explicit 10 uniform calibration bins, a named calibration-curve artifact, and ECE so later plans do not reconstruct metric semantics ad hoc.
+- [Phase 03]: Filesystem-first bundle manifests remain canonical, while report artifacts live under reports/modeling/<run_id> and are referenced from the manifest.
+- [Phase 03]: XGBoost bundles persist raw_model.ubj plus a preprocessor sidecar so loads can reconstruct the trained pipeline without violating the required raw-model file contract.
+- [Phase 03]: Split manifests now carry shared source provenance so artifact manifests can record the exact pinned Jeff Sackmann commit SHA without reopening datasets.
 
 ### Pending Todos
 
@@ -110,6 +114,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-19T14:13:19.167Z
+Last session: 2026-06-19T14:26:56.481Z
 Stopped at: Completed 03-03-PLAN.md
 Resume file: None

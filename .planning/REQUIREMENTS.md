@@ -36,8 +36,8 @@ Requirements for the initial release. Each maps to a roadmap phase.
 - [x] **MOD-04**: System trains an XGBoost production-candidate model.
 - [x] **MOD-05**: System calibrates model probabilities using a disjoint chronological validation period.
 - [x] **MOD-06**: System evaluates models with accuracy, ROC AUC, log loss, Brier score, calibration curve, and expected calibration error.
-- [ ] **MOD-07**: System reports segment diagnostics by surface, tournament level, time period, ranking band, and confidence bucket.
-- [ ] **MOD-08**: System persists model artifacts with source version, feature version, split boundaries, model parameters, calibrator, and metrics.
+- [x] **MOD-07**: System reports segment diagnostics by surface, tournament level, time period, ranking band, and confidence bucket.
+- [x] **MOD-08**: System persists model artifacts with source version, feature version, split boundaries, model parameters, calibrator, and metrics.
 
 ### Backtesting
 
@@ -138,8 +138,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOD-04 | Phase 3 | Complete |
 | MOD-05 | Phase 3 | Complete |
 | MOD-06 | Phase 3 | Complete |
-| MOD-07 | Phase 3 | Pending |
-| MOD-08 | Phase 3 | Pending |
+| MOD-07 | Phase 3 | Complete |
+| MOD-08 | Phase 3 | Complete |
 | BKT-01 | Phase 4 | Pending |
 | BKT-02 | Phase 4 | Pending |
 | BKT-03 | Phase 4 | Pending |

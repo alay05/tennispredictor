@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation and ATP Data Contracts** - Establish the typed project, Sackmann source lineage, ATP-only scope rules, and canonical data tables.
 - [x] **Phase 2: Leakage-Safe Feature Engine** - Produce chronological pre-match feature snapshots with leakage tests as a phase gate. (completed 2026-06-18)
-- [ ] **Phase 3: Modeling, Calibration, and Artifact Registry** - Train benchmark and production-candidate models with calibrated probabilities and reproducible artifacts.
+- [x] **Phase 3: Modeling, Calibration, and Artifact Registry** - Train benchmark and production-candidate models with calibrated probabilities and reproducible artifacts. (completed 2026-06-19)
 - [ ] **Phase 4: Backtesting and EV Decision Core** - Replay predictions and EV decisions with provenance-aware betting evidence.
 - [ ] **Phase 5: Kalshi Read-Only Market Integration** - Collect and persist Kalshi-only market, detail, and orderbook snapshots without execution surfaces.
 - [ ] **Phase 6: Market Mapping, Executable Pricing, and Live EV Monitor** - Map ATP markets, compute executable EV, and rank live or shadow-mode opportunities.
@@ -95,14 +95,14 @@ Plans:
   4. Developer can inspect accuracy, ROC AUC, log loss, Brier score, calibration curve, expected calibration error, and segment diagnostics.
   5. System persists model artifacts with source version, feature version, split boundaries, model parameters, calibrator, and metrics.
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 
 - [x] 03-01-PLAN.md — Frozen modeling dataset materialization and chronological split manifests
 - [x] 03-02-PLAN.md — Approved ML dependency bootstrap and baseline model training
 - [x] 03-03-PLAN.md — Calibrated XGBoost candidate and probability metric surface
-- [ ] 03-04-PLAN.md — Filesystem-first artifact registry and segment diagnostics
+- [x] 03-04-PLAN.md — Filesystem-first artifact registry and segment diagnostics
 
 ### Phase 4: Backtesting and EV Decision Core
 
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation and ATP Data Contracts | 4/4 | Complete | 2026-06-16 |
 | 2. Leakage-Safe Feature Engine | 5/5 | Complete    | 2026-06-18 |
-| 3. Modeling, Calibration, and Artifact Registry | 3/4 | In Progress|  |
+| 3. Modeling, Calibration, and Artifact Registry | 4/4 | Complete   | 2026-06-19 |
 | 4. Backtesting and EV Decision Core | 0/3 | Not started | - |
 | 5. Kalshi Read-Only Market Integration | 0/3 | Not started | - |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | Not started | - |
