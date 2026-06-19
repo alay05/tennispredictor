@@ -88,10 +88,10 @@ The artifact registry should be project-owned and filesystem-first. The repo alr
 | Separate raw estimator artifact plus separate calibrator artifact | One opaque “final predictor” blob only | A single blob is simpler to load, but it hides whether a model was trained on train only, how it was calibrated, and whether recalibration can be replayed later. [CITED: https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html][ASSUMED] |
 | Same ordered feature contract for all model families | Bespoke column sets per model | One contract reduces downstream replay risk and makes backtesting/live prediction reuse straightforward; model-specific preprocessing can still differ by trainer. [CITED: .planning/phases/02-leakage-safe-feature-engine/02-VERIFICATION.md][ASSUMED] |
 
-**Installation:** Add an `ml` dependency group to `pyproject.toml`, then sync the environment with the project-standard toolchain once `uv` is available. [CITED: AGENTS.md][CITED: pyproject.toml][CITED: local env probe: `uv --version`]
+**Installation:** Add an `ml` dependency group to `pyproject.toml`, then sync the environment with the project-standard module runner `python3 -m uv`. The standalone `uv` binary is not on `PATH` here, but the Python module is available and matches the plan verification commands. [CITED: AGENTS.md][CITED: pyproject.toml][CITED: local env probe: `python3 -m uv --version`][CITED: local env probe: `command -v uv`]
 
 ```bash
-uv sync --group dev --group ml
+python3 -m uv sync --group dev --group ml
 ```
 
 **Version verification:** The local `.venv` currently has no `pip`, so version verification had to use host `python3 -m pip index versions` plus PyPI JSON. [CITED: local env probe: `./.venv/bin/python -m pip --version`][CITED: https://pypi.org/pypi/scikit-learn/json][CITED: https://pypi.org/pypi/xgboost/json][CITED: https://pypi.org/pypi/mlflow/json][CITED: https://pypi.org/pypi/joblib/json][CITED: https://pypi.org/pypi/pandas/json][CITED: https://pypi.org/pypi/matplotlib/json]
@@ -319,10 +319,10 @@ with mlflow.start_run():
 **Warning signs:** Validation bins look overly stepwise, AUC changes unexpectedly after isotonic calibration, or the method is absent from the artifact manifest. [CITED: https://scikit-learn.org/stable/modules/calibration.html][ASSUMED]
 
 ### Pitfall 5: Assuming the Environment Is Already Ready
-**What goes wrong:** The phase plan jumps straight into training tasks even though `uv` is missing and none of the modeling packages are installed in the current `.venv`. [CITED: local env probe: `uv --version`][CITED: local env probe: modeling imports]  
+**What goes wrong:** The phase plan assumes the full ML environment is ready when, in reality, only the `python3 -m uv` runner and dev tools are present while the modeling packages themselves are still missing from the current `.venv`. [CITED: local env probe: `python3 -m uv --version`][CITED: local env probe: modeling imports]  
 **Why it happens:** The foundation/feature phases passed, so it is easy to assume the full ML stack is already present. [CITED: .planning/STATE.md][CITED: local env probe: modeling imports]  
-**How to avoid:** Insert an explicit dependency/bootstrap task at the start of Phase 03 and make verification commands use the actual available runner until `uv` is installed. [CITED: pyproject.toml][CITED: local env probe: `./.venv/bin/python -m pytest -q`]  
-**Warning signs:** `uv` is not found, `.venv` lacks `pip`, and imports for `pandas`, `sklearn`, `xgboost`, `joblib`, `mlflow`, and `matplotlib` all fail. [CITED: local env probe: `uv --version`][CITED: local env probe: `./.venv/bin/python -m pip --version`][CITED: local env probe: modeling imports]
+**How to avoid:** Keep verification commands on `python3 -m uv run` from Wave 1 onward, because that runner already works in this environment, and insert the ML dependency/bootstrap task before any modeling imports or sync-sensitive tests. [CITED: pyproject.toml][CITED: local env probe: `python3 -m uv run pytest --version`]  
+**Warning signs:** The bare `uv` command is not found on `PATH`, `.venv` lacks `pip`, and imports for `pandas`, `sklearn`, `xgboost`, `joblib`, `mlflow`, and `matplotlib` all fail. [CITED: local env probe: `command -v uv`][CITED: local env probe: `./.venv/bin/python -m pip --version`][CITED: local env probe: modeling imports]
 
 ## Code Examples
 
@@ -387,17 +387,19 @@ joblib.dump(calibrated_model, artifact_dir / "calibrator.joblib")
 | A4 | Segment diagnostics should persist explicit bucket definitions for ranking bands and confidence buckets in the artifact manifest. [ASSUMED] | Phase Requirements / Common Pitfalls | Low. The metrics still work, but cross-run comparability becomes weaker if bins are implicit. |
 | A5 | `TimeSeriesSplit` is not sufficient as the official holdout contract for ATP match data because the repo needs immutable replayable membership, not just generated folds. [ASSUMED] | Standard Stack / State of the Art | Medium. If the team is comfortable generating folds on the fly, registry design could be simplified at the cost of reproducibility. |
 
-## Open Questions
+## Resolved Research Decisions
+
+> Resolved on 2026-06-18 during planning revision 2. Execution is not blocked on either item.
 
 1. **Version drift versus project targets**
-   - What we know: `AGENTS.md` currently targets `xgboost 3.2.x` and `mlflow 3.13.x`, but the latest registry versions observed on 2026-06-17 were `xgboost 3.3.0` and `mlflow 3.14.0`. [CITED: AGENTS.md][CITED: https://pypi.org/pypi/xgboost/json][CITED: https://pypi.org/pypi/mlflow/json]
-   - What's unclear: Whether the planner should hold the documented project targets or update them before execution.
-   - Recommendation: Keep the documented project targets for Phase 03 unless the user explicitly wants to revise stack policy first. [ASSUMED]
+   - Decision: Hold the documented Phase 03 target bands from `AGENTS.md` for execution. Use the project-target `xgboost 3.2.x` range in the mandatory `ml` dependency group for this phase, and keep `mlflow 3.13.x` as an optional later addition rather than silently upgrading stack policy to the newest observed releases. [CITED: AGENTS.md][CITED: https://pypi.org/pypi/xgboost/json][CITED: https://pypi.org/pypi/mlflow/json]
+   - Why: `AGENTS.md` is the governing stack contract for this repo, and the current Phase 03 plans do not require a stack-policy change to deliver MOD-01 through MOD-08. [CITED: AGENTS.md][CITED: .planning/REQUIREMENTS.md]
+   - Execution impact: Plan `03-02` should keep the mandatory install surface limited to `pandas`, `scikit-learn`, `xgboost`, and `joblib`, with `mlflow` remaining optional and out of the required bootstrap path. [CITED: .planning/phases/03-modeling-calibration-and-artifact-registry/03-02-PLAN.md]
 
 2. **First official split windows**
-   - What we know: The phase requires frozen chronological train/validation/test datasets, but no phase-specific discuss-phase decision defined the first production boundaries. [CITED: .planning/REQUIREMENTS.md][CITED: user request]
-   - What's unclear: Exact year or tournament cutoffs for the first saved split manifest.
-   - Recommendation: Make boundary selection a dedicated planning task with a config-driven manifest writer, not a hard-coded research assumption. [ASSUMED]
+   - Decision: The first official Phase 03 split manifest uses the project-wide chronological `70/15/15` split policy already recorded in `.planning/research/FEATURES.md`, applied to the fully ordered modeling dataset materialized from persisted Phase 02 differential rows. The split freezer must persist the resolved inclusive train, validation, and test end dates plus exact ordered memberships and hashes in the manifest. [CITED: .planning/research/FEATURES.md][CITED: .planning/REQUIREMENTS.md][CITED: .planning/phases/03-modeling-calibration-and-artifact-registry/03-01-PLAN.md]
+   - Why: The repo already committed to chronological `70/15/15` evaluation at the project-research level, and freezing the resolved memberships removes the last execution-time ambiguity without reintroducing shuffled or ad hoc holdouts. [CITED: .planning/research/FEATURES.md][CITED: AGENTS.md]
+   - Execution impact: Plan `03-01` should derive the first canonical boundary dates from the ordered dataset using the `70/15/15` policy, then persist those dates and exact memberships as the replayable split contract for all later Phase 03 plans. [CITED: .planning/phases/03-modeling-calibration-and-artifact-registry/03-01-PLAN.md]
 
 ## Environment Availability
 
@@ -406,7 +408,7 @@ joblib.dump(calibrated_model, artifact_dir / "calibrator.joblib")
 | Python `.venv` runtime | All Phase 03 code/tests | ✓ [CITED: local env probe: `./.venv/bin/python --version`] | 3.12.4 [CITED: local env probe: `./.venv/bin/python --version`] | — |
 | `pytest` in `.venv` | Unit-test execution | ✓ [CITED: local env probe: baseline imports] | 9.1.0 [CITED: local env probe: baseline imports] | — |
 | `git` | Provenance / optional artifact metadata | ✓ [CITED: local env probe: `git --version`] | 2.52.0 [CITED: local env probe: `git --version`] | — |
-| `uv` | Project-standard dependency sync and command runner | ✗ [CITED: local env probe: `uv --version`] | — | none |
+| `python3 -m uv` | Project-standard dependency sync and command runner | ✓ [CITED: local env probe: `python3 -m uv --version`] | 0.11.21 [CITED: local env probe: `python3 -m uv --version`] | Use the module runner because the standalone `uv` binary is not on `PATH`. [CITED: local env probe: `command -v uv`] |
 | `pandas` | Model-input DataFrame bridge | ✗ [CITED: local env probe: modeling imports] | — | none |
 | `scikit-learn` | Baselines, calibration, metrics | ✗ [CITED: local env probe: modeling imports] | — | none |
 | `xgboost` | Candidate model | ✗ [CITED: local env probe: modeling imports] | — | none |
@@ -417,7 +419,6 @@ joblib.dump(calibrated_model, artifact_dir / "calibrator.joblib")
 
 **Missing dependencies with no fallback:**
 
-- `uv`
 - `pandas`
 - `scikit-learn`
 - `xgboost`
