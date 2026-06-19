@@ -83,7 +83,10 @@ def build_synthetic_modeling_fixture(tmp_path: Path) -> SyntheticModelingFixture
         )
         connection.executemany(
             """
-            insert into feature_differential_rows values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            insert into feature_differential_rows values (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )
             """,
             [
                 tuple(row[column] for column in row.keys())
@@ -121,8 +124,12 @@ def build_synthetic_modeling_fixture(tmp_path: Path) -> SyntheticModelingFixture
                 (
                     row["canonical_match_id"],
                     f"tournament:synthetic:{row['as_of_date']}",
-                    row["player_a_id"] if match_index % 3 != 0 else row["player_b_id"],
-                    row["player_b_id"] if match_index % 3 != 0 else row["player_a_id"],
+                    row["player_a_id"]
+                    if row["lineage_source_row_number"] % 3 != 0
+                    else row["player_b_id"],
+                    row["player_b_id"]
+                    if row["lineage_source_row_number"] % 3 != 0
+                    else row["player_a_id"],
                     "2024-001",
                     row["surface"],
                     "Example Open",
@@ -137,7 +144,7 @@ def build_synthetic_modeling_fixture(tmp_path: Path) -> SyntheticModelingFixture
                     row["lineage_source_row_number"],
                     row["lineage_source_snapshot_root"],
                 )
-                for match_index, row in enumerate(feature_rows, start=1)
+                for row in feature_rows
             ],
         )
     finally:

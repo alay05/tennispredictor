@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from tests.unit.modeling_fixtures import build_synthetic_modeling_fixture
-
 from tennisprediction.modeling.datasets import materialize_modeling_dataset
+from tests.unit.modeling_fixtures import build_synthetic_modeling_fixture
 
 
 def test_materialize_modeling_dataset_joins_labels_and_orders_rows(tmp_path) -> None:
@@ -29,7 +28,10 @@ def test_materialize_modeling_dataset_joins_labels_and_orders_rows(tmp_path) -> 
         for row in dataset.rows
         if row.as_of_date == "20240102"
     ]
-    assert [(row.lineage_source_file_path, row.lineage_source_row_number) for row in tie_break_rows] == [
+    assert [
+        (row.lineage_source_file_path, row.lineage_source_row_number)
+        for row in tie_break_rows
+    ] == [
         ("atp_matches_2024.csv", 2),
         ("atp_matches_2024_extra.csv", 3),
     ]
