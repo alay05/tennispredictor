@@ -33,9 +33,9 @@ Requirements for the initial release. Each maps to a roadmap phase.
 - [x] **MOD-01**: System creates frozen chronological train, validation, and test datasets without random shuffling.
 - [x] **MOD-02**: System trains a logistic regression benchmark model.
 - [x] **MOD-03**: System trains a random forest benchmark model.
-- [ ] **MOD-04**: System trains an XGBoost production-candidate model.
-- [ ] **MOD-05**: System calibrates model probabilities using a disjoint chronological validation period.
-- [ ] **MOD-06**: System evaluates models with accuracy, ROC AUC, log loss, Brier score, calibration curve, and expected calibration error.
+- [x] **MOD-04**: System trains an XGBoost production-candidate model.
+- [x] **MOD-05**: System calibrates model probabilities using a disjoint chronological validation period.
+- [x] **MOD-06**: System evaluates models with accuracy, ROC AUC, log loss, Brier score, calibration curve, and expected calibration error.
 - [ ] **MOD-07**: System reports segment diagnostics by surface, tournament level, time period, ranking band, and confidence bucket.
 - [ ] **MOD-08**: System persists model artifacts with source version, feature version, split boundaries, model parameters, calibrator, and metrics.
 
@@ -135,9 +135,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOD-01 | Phase 3 | Complete |
 | MOD-02 | Phase 3 | Complete |
 | MOD-03 | Phase 3 | Complete |
-| MOD-04 | Phase 3 | Pending |
-| MOD-05 | Phase 3 | Pending |
-| MOD-06 | Phase 3 | Pending |
+| MOD-04 | Phase 3 | Complete |
+| MOD-05 | Phase 3 | Complete |
+| MOD-06 | Phase 3 | Complete |
 | MOD-07 | Phase 3 | Pending |
 | MOD-08 | Phase 3 | Pending |
 | BKT-01 | Phase 4 | Pending |

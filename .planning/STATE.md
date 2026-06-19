@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-06-19T02:56:18.149Z"
-last_activity: 2026-06-18 -- completed 03-01 frozen modeling dataset materialization and split manifest slice
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-06-19T14:13:19.173Z"
+last_activity: 2026-06-19 -- completed 03-03 calibrated XGBoost candidate and probability metric surface slice
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 13
-  completed_plans: 11
-  percent: 29
+  completed_plans: 12
+  percent: 92
 ---
 
 # Project State
@@ -27,17 +27,17 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 ## Current Position
 
 Phase: 03
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
-Last activity: 2026-06-18 -- completed 03-01 frozen modeling dataset materialization and split manifest slice
+Last activity: 2026-06-19 -- completed 03-03 calibrated XGBoost candidate and probability metric surface slice
 
-Progress: [████████░░] 77%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 10
+- Total plans completed: 12
 - Average duration: 2 min
 - Total execution time: 0.1 hours
 
@@ -47,17 +47,18 @@ Progress: [████████░░] 77%
 |-------|-------|-------|----------|
 | 1. Foundation and ATP Data Contracts | 4/4 | 0.0h | N/A |
 | 2. Leakage-Safe Feature Engine | 5/5 | 0.1h | 3 min |
-| 3. Modeling, Calibration, and Artifact Registry | 1/4 | 0.1h | 4 min |
+| 3. Modeling, Calibration, and Artifact Registry | 3/4 | 0.3h | 6 min |
 | 4. Backtesting and EV Decision Core | 0/3 | 0.0h | N/A |
 | 5. Kalshi Read-Only Market Integration | 0/3 | 0.0h | N/A |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | 0.0h | N/A |
 | 7. Alerts and Operational Hardening | 0/4 | 0.0h | N/A |
 **Recent Trend:**
 
-- Last 5 plans: 02-02, 02-03, 02-04, 02-05, 03-01
-- Trend: Phase 03 started with frozen modeling dataset and split-manifest delivery
+- Last 5 plans: 02-04, 02-05, 03-01, 03-02, 03-03
+- Trend: Phase 03 now includes frozen datasets, baselines, and calibrated XGBoost probability evaluation
 
 | Phase 03 P02 | 5min | 3 tasks | 6 files |
+| Phase 03 P03 | 9min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,9 @@ Recent decisions affecting current work:
 - [Phase 03]: Keep RawModelFitResult.trained_estimator as the canonical cross-plan handoff in this slice, and leave raw_model_artifact_path null until the artifact-registry plan persists it.
 - [Phase 03]: Select train, validation, and test rows strictly from FrozenSplitManifest memberships instead of re-deriving windows from dates during trainer execution.
 - [Phase 03]: Treat persisted string and boolean feature columns as categorical preprocessing inputs so the baseline trainers can consume the full frozen feature contract without rewriting Phase 02 outputs.
+- [Phase 03]: The XGBoost candidate reserves only the trailing 15% of frozen train memberships for fit-time early stopping and records fit/eval membership hashes in fit metadata.
+- [Phase 03]: Calibrated prediction rows preserve row-level downstream context including match identity, surface, tournament level, rank inputs, target, raw probability, calibrated probability, and favored-side probability.
+- [Phase 03]: The shared probability metrics surface owns explicit 10 uniform calibration bins, a named calibration-curve artifact, and ECE so later plans do not reconstruct metric semantics ad hoc.
 
 ### Pending Todos
 
@@ -106,6 +110,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-19T02:56:18.144Z
-Stopped at: Completed 03-02-PLAN.md
+Last session: 2026-06-19T14:13:19.167Z
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None

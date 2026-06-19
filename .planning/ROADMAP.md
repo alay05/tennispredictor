@@ -95,13 +95,13 @@ Plans:
   4. Developer can inspect accuracy, ROC AUC, log loss, Brier score, calibration curve, expected calibration error, and segment diagnostics.
   5. System persists model artifacts with source version, feature version, split boundaries, model parameters, calibrator, and metrics.
 
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 
 - [x] 03-01-PLAN.md — Frozen modeling dataset materialization and chronological split manifests
 - [x] 03-02-PLAN.md — Approved ML dependency bootstrap and baseline model training
-- [ ] 03-03-PLAN.md — Calibrated XGBoost candidate and probability metric surface
+- [x] 03-03-PLAN.md — Calibrated XGBoost candidate and probability metric surface
 - [ ] 03-04-PLAN.md — Filesystem-first artifact registry and segment diagnostics
 
 ### Phase 4: Backtesting and EV Decision Core
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation and ATP Data Contracts | 4/4 | Complete | 2026-06-16 |
 | 2. Leakage-Safe Feature Engine | 5/5 | Complete    | 2026-06-18 |
-| 3. Modeling, Calibration, and Artifact Registry | 2/4 | In Progress|  |
+| 3. Modeling, Calibration, and Artifact Registry | 3/4 | In Progress|  |
 | 4. Backtesting and EV Decision Core | 0/3 | Not started | - |
 | 5. Kalshi Read-Only Market Integration | 0/3 | Not started | - |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | Not started | - |
