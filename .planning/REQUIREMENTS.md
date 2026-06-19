@@ -31,8 +31,8 @@ Requirements for the initial release. Each maps to a roadmap phase.
 ### Modeling
 
 - [x] **MOD-01**: System creates frozen chronological train, validation, and test datasets without random shuffling.
-- [ ] **MOD-02**: System trains a logistic regression benchmark model.
-- [ ] **MOD-03**: System trains a random forest benchmark model.
+- [x] **MOD-02**: System trains a logistic regression benchmark model.
+- [x] **MOD-03**: System trains a random forest benchmark model.
 - [ ] **MOD-04**: System trains an XGBoost production-candidate model.
 - [ ] **MOD-05**: System calibrates model probabilities using a disjoint chronological validation period.
 - [ ] **MOD-06**: System evaluates models with accuracy, ROC AUC, log loss, Brier score, calibration curve, and expected calibration error.
@@ -133,8 +133,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FEAT-08 | Phase 2 | Complete |
 | FEAT-09 | Phase 2 | Complete |
 | MOD-01 | Phase 3 | Complete |
-| MOD-02 | Phase 3 | Pending |
-| MOD-03 | Phase 3 | Pending |
+| MOD-02 | Phase 3 | Complete |
+| MOD-03 | Phase 3 | Complete |
 | MOD-04 | Phase 3 | Pending |
 | MOD-05 | Phase 3 | Pending |
 | MOD-06 | Phase 3 | Pending |

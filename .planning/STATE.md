@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-06-19T02:37:47.445Z"
+status: executing
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-06-19T02:56:18.149Z"
 last_activity: 2026-06-18 -- completed 03-01 frozen modeling dataset materialization and split manifest slice
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 13
-  completed_plans: 10
-  percent: 77
+  completed_plans: 11
+  percent: 29
 ---
 
 # Project State
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 ## Current Position
 
 Phase: 03
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-06-18 -- completed 03-01 frozen modeling dataset materialization and split manifest slice
 
@@ -57,6 +57,8 @@ Progress: [████████░░] 77%
 - Last 5 plans: 02-02, 02-03, 02-04, 02-05, 03-01
 - Trend: Phase 03 started with frozen modeling dataset and split-manifest delivery
 
+| Phase 03 P02 | 5min | 3 tasks | 6 files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -81,6 +83,9 @@ Recent decisions affecting current work:
 - [Phase 02]: Use one duplicate-row-number fixture across state, leakage, and persistence so FEAT-09 covers the real multi-file stat-collision path.
 - [Phase 03]: Modeling rows carry row-level lineage metadata plus a feature_values dictionary keyed by one shared ordered feature-column list so later training code can reuse persisted Phase 02 columns without re-deriving them.
 - [Phase 03]: Split manifests freeze exact ordered canonical_match_id memberships and sha256 hashes, and split boundary dates must resolve to real dataset endpoints.
+- [Phase 03]: Keep RawModelFitResult.trained_estimator as the canonical cross-plan handoff in this slice, and leave raw_model_artifact_path null until the artifact-registry plan persists it.
+- [Phase 03]: Select train, validation, and test rows strictly from FrozenSplitManifest memberships instead of re-deriving windows from dates during trainer execution.
+- [Phase 03]: Treat persisted string and boolean feature columns as categorical preprocessing inputs so the baseline trainers can consume the full frozen feature contract without rewriting Phase 02 outputs.
 
 ### Pending Todos
 
@@ -101,6 +106,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-19T02:37:47.435Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-06-19T02:56:18.144Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None
