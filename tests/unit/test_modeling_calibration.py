@@ -14,7 +14,11 @@ from tennisprediction.modeling.baselines import (
 )
 from tennisprediction.modeling.calibration import calibrate_model_probabilities
 from tennisprediction.modeling.datasets import materialize_modeling_dataset
-from tennisprediction.modeling.schemas import FrozenModelingDataset, FrozenSplitManifest, RawModelFitResult
+from tennisprediction.modeling.schemas import (
+    FrozenModelingDataset,
+    FrozenSplitManifest,
+    RawModelFitResult,
+)
 from tennisprediction.modeling.splits import SplitBoundaryConfig, freeze_chronological_splits
 from tennisprediction.modeling.xgboost_model import fit_xgboost_candidate
 from tests.unit.modeling_fixtures import build_synthetic_modeling_fixture
@@ -36,17 +40,6 @@ def test_calibrate_model_probabilities_uses_validation_rows_only_and_returns_typ
 ) -> None:
     dataset, manifest_path, manifest = _build_dataset_and_manifest(tmp_path, monkeypatch)
     raw_fit_result = raw_fit_builder(dataset, manifest_path)
-    recording_instances: list[RecordingCalibratedClassifierCV] = []
-
-    class RecordingCalibrator(RecordingCalibratedClassifierCV):
-        def __init__(self, *args: object, **kwargs: object) -> None:
-            super().__init__(*args, **kwargs)
-            recording_instances.append(self)
-
-    monkeypatch.setattr(
-        "tennisprediction.modeling.calibration.CalibratedClassifierCV",
-        RecordingCalibrator,
-    )
 
     result = calibrate_model_probabilities(
         raw_fit_result,
@@ -55,8 +48,8 @@ def test_calibrate_model_probabilities_uses_validation_rows_only_and_returns_typ
         method="sigmoid",
     )
 
-    calibrator = recording_instances[-1]
-    assert isinstance(calibrator.estimator, FrozenEstimator)
+    calibrator = result.calibrator
+    assert isinstance(calibrator.frozen_estimator, FrozenEstimator)
     assert calibrator.method == "sigmoid"
     assert calibrator.fit_row_count == manifest.validation.row_count
     assert calibrator.predict_row_counts == [manifest.validation.row_count, manifest.test.row_count]
@@ -74,7 +67,9 @@ def test_calibrate_model_probabilities_uses_validation_rows_only_and_returns_typ
     assert [
         row.canonical_match_id for row in result.validation_predictions
     ] == manifest.validation.canonical_match_ids
-    assert [row.canonical_match_id for row in result.test_predictions] == manifest.test.canonical_match_ids
+    assert [
+        row.canonical_match_id for row in result.test_predictions
+    ] == manifest.test.canonical_match_ids
 
     row_lookup = {row.canonical_match_id: row for row in dataset.rows}
     for prediction_row in result.validation_predictions + result.test_predictions:
@@ -85,7 +80,9 @@ def test_calibrate_model_probabilities_uses_validation_rows_only_and_returns_typ
         assert prediction_row.player_a_rank == source_row.feature_values["player_a_rank"]
         assert prediction_row.player_b_rank == source_row.feature_values["player_b_rank"]
         assert prediction_row.rank_diff == source_row.feature_values["rank_diff"]
-        assert prediction_row.raw_probability in raw_fit_result.validation_probabilities + raw_fit_result.test_probabilities
+        assert prediction_row.raw_probability in (
+            raw_fit_result.validation_probabilities + raw_fit_result.test_probabilities
+        )
         assert 0.0 <= prediction_row.calibrated_probability <= 1.0
         assert prediction_row.favored_side in {"A", "B"}
         assert prediction_row.favored_probability == pytest.approx(
@@ -123,30 +120,3 @@ def _build_dataset_and_manifest(
     )
     manifest_path = settings.models_dir / "splits" / f"{manifest.split_id}.json"
     return dataset, manifest_path, manifest
-
-
-class RecordingCalibratedClassifierCV:
-    def __init__(
-        self,
-        estimator: object = None,
-        *,
-        method: str = "sigmoid",
-        **_: object,
-    ) -> None:
-        from sklearn.calibration import CalibratedClassifierCV as RealCalibratedClassifierCV
-
-        self.estimator = estimator
-        self.method = method
-        self.fit_row_count = 0
-        self.predict_row_counts: list[int] = []
-        self._inner = RealCalibratedClassifierCV(estimator=estimator, method=method)
-
-    def fit(self, X: object, y: object) -> RecordingCalibratedClassifierCV:
-        self.fit_row_count = len(y)
-        self._inner.fit(X, y)
-        return self
-
-    def predict_proba(self, X: object) -> object:
-        self.predict_row_counts.append(len(X))
-        return self._inner.predict_proba(X)
-

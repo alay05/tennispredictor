@@ -26,7 +26,9 @@ def test_fit_xgboost_candidate_uses_train_membership_only_and_reserves_tail_eval
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     dataset, manifest_path, manifest = _build_dataset_and_manifest(tmp_path, monkeypatch)
-    custom_train_ids = manifest.train.canonical_match_ids[:10] + manifest.train.canonical_match_ids[-4:]
+    custom_train_ids = (
+        manifest.train.canonical_match_ids[:10] + manifest.train.canonical_match_ids[-4:]
+    )
     custom_manifest = manifest.model_copy(
         update={
             "train": _window_for_ids(dataset=dataset, canonical_match_ids=custom_train_ids),

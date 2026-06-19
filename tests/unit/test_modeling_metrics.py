@@ -14,7 +14,11 @@ from tennisprediction.modeling.baselines import (
 from tennisprediction.modeling.calibration import calibrate_model_probabilities
 from tennisprediction.modeling.datasets import materialize_modeling_dataset
 from tennisprediction.modeling.metrics import evaluate_probability_predictions
-from tennisprediction.modeling.schemas import FrozenModelingDataset, FrozenSplitManifest, RawModelFitResult
+from tennisprediction.modeling.schemas import (
+    FrozenModelingDataset,
+    FrozenSplitManifest,
+    RawModelFitResult,
+)
 from tennisprediction.modeling.splits import SplitBoundaryConfig, freeze_chronological_splits
 from tennisprediction.modeling.xgboost_model import fit_xgboost_candidate
 from tests.unit.modeling_fixtures import build_synthetic_modeling_fixture
@@ -56,8 +60,13 @@ def test_evaluate_probability_predictions_returns_scalar_metrics_bins_curve_and_
     assert 0.0 <= metrics.brier_score <= 1.0
     assert metrics.expected_calibration_error >= 0.0
     assert len(metrics.calibration_bins) == 10
-    assert [calibration_bin.bin_index for calibration_bin in metrics.calibration_bins] == list(range(10))
-    assert sum(calibration_bin.sample_count for calibration_bin in metrics.calibration_bins) == len(y_true)
+    assert [calibration_bin.bin_index for calibration_bin in metrics.calibration_bins] == list(
+        range(10)
+    )
+    assert (
+        sum(calibration_bin.sample_count for calibration_bin in metrics.calibration_bins)
+        == len(y_true)
+    )
     assert metrics.calibration_bins[0].lower_bound == pytest.approx(0.0)
     assert metrics.calibration_bins[-1].upper_bound == pytest.approx(1.0)
     assert metrics.calibration_curve_artifact == "uniform_10_bin_calibration_curve"
