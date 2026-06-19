@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+from collections import defaultdict
+
 from sklearn.calibration import calibration_curve
 from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, roc_auc_score
 
 from tennisprediction.modeling.schemas import (
+    CalibratedPredictionRow,
     CalibrationBin,
     CalibrationCurvePoint,
     ProbabilityMetrics,
+    SegmentDiagnosticRow,
 )
 
 
@@ -103,9 +107,7 @@ def _build_calibration_curve_points(
         strategy="uniform",
     )
     non_empty_bins = [
-        calibration_bin
-        for calibration_bin in calibration_bins
-        if calibration_bin.sample_count > 0
+        calibration_bin for calibration_bin in calibration_bins if calibration_bin.sample_count > 0
     ]
 
     return [
@@ -135,3 +137,80 @@ def _expected_calibration_error(calibration_bins: list[CalibrationBin]) -> float
             for calibration_bin in calibration_bins
         )
     )
+
+
+def build_segment_diagnostics(
+    calibrated_predictions: list[CalibratedPredictionRow],
+) -> list[SegmentDiagnosticRow]:
+    segment_rows: list[SegmentDiagnosticRow] = []
+    segment_groups: dict[tuple[str, str], list[CalibratedPredictionRow]] = defaultdict(list)
+
+    for prediction in calibrated_predictions:
+        segment_groups[("surface", prediction.surface)].append(prediction)
+        segment_groups[("tourney_level", prediction.tourney_level)].append(prediction)
+        segment_groups[("time_period", _calendar_year(prediction.as_of_date))].append(prediction)
+        segment_groups[("ranking_band", _ranking_band(prediction))].append(prediction)
+        segment_groups[
+            ("confidence_bucket", _confidence_bucket(prediction.favored_probability))
+        ].append(prediction)
+
+    for segment_name, segment_value in sorted(segment_groups):
+        rows = segment_groups[(segment_name, segment_value)]
+        sample_count = len(rows)
+        wins = sum(row.target for row in rows)
+        predicted_wins = sum(
+            1 for row in rows if (1 if row.calibrated_probability >= 0.5 else 0) == row.target
+        )
+        segment_rows.append(
+            SegmentDiagnosticRow(
+                segment_name=segment_name,
+                segment_value=segment_value,
+                sample_count=sample_count,
+                win_rate=wins / sample_count,
+                accuracy=predicted_wins / sample_count,
+                mean_calibrated_probability=sum(row.calibrated_probability for row in rows)
+                / sample_count,
+                mean_favored_probability=sum(row.favored_probability for row in rows)
+                / sample_count,
+            )
+        )
+
+    return segment_rows
+
+
+def _calendar_year(as_of_date: str) -> str:
+    if len(as_of_date) < 4:
+        msg = "as_of_date must start with a four-digit calendar year"
+        raise ValueError(msg)
+    return as_of_date[:4]
+
+
+def _ranking_band(prediction: CalibratedPredictionRow) -> str:
+    available_ranks = [
+        rank for rank in (prediction.player_a_rank, prediction.player_b_rank) if rank is not None
+    ]
+    if not available_ranks:
+        return "unranked"
+
+    best_rank = min(available_ranks)
+    if best_rank <= 10:
+        return "1-10"
+    if best_rank <= 25:
+        return "11-25"
+    if best_rank <= 50:
+        return "26-50"
+    if best_rank <= 100:
+        return "51-100"
+    return "101+"
+
+
+def _confidence_bucket(favored_probability: float) -> str:
+    if favored_probability < 0.6:
+        return "[0.50,0.60)"
+    if favored_probability < 0.7:
+        return "[0.60,0.70)"
+    if favored_probability < 0.8:
+        return "[0.70,0.80)"
+    if favored_probability < 0.9:
+        return "[0.80,0.90)"
+    return "[0.90,1.00]"

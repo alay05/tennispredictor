@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from pathlib import Path
 
 import pandas as pd
@@ -71,17 +70,14 @@ def test_evaluate_probability_predictions_returns_scalar_metrics_bins_curve_and_
     assert [calibration_bin.bin_index for calibration_bin in metrics.calibration_bins] == list(
         range(10)
     )
-    assert (
-        sum(calibration_bin.sample_count for calibration_bin in metrics.calibration_bins)
-        == len(y_true)
+    assert sum(calibration_bin.sample_count for calibration_bin in metrics.calibration_bins) == len(
+        y_true
     )
     assert metrics.calibration_bins[0].lower_bound == pytest.approx(0.0)
     assert metrics.calibration_bins[-1].upper_bound == pytest.approx(1.0)
     assert metrics.calibration_curve_artifact == "uniform_10_bin_calibration_curve"
     assert len(metrics.calibration_curve) >= 1
-    assert {
-        curve_point.bin_index for curve_point in metrics.calibration_curve
-    } <= set(range(10))
+    assert {curve_point.bin_index for curve_point in metrics.calibration_curve} <= set(range(10))
     for curve_point in metrics.calibration_curve:
         assert 0.0 <= curve_point.mean_predicted_probability <= 1.0
         assert 0.0 <= curve_point.empirical_positive_rate <= 1.0
@@ -145,7 +141,7 @@ def test_build_segment_diagnostics_groups_calibrated_predictions_into_required_s
             surface="Grass",
             tourney_level="A",
             player_a_rank=None,
-            player_b_rank=18,
+            player_b_rank=None,
             target=1,
             calibrated_probability=0.58,
             favored_side="B",
@@ -333,7 +329,11 @@ def _prediction_row(
     favored_side: str = "A",
     favored_probability: float | None = None,
 ) -> CalibratedPredictionRow:
-    raw_probability = calibrated_probability if favored_side == "A" else 1.0 - calibrated_probability
+    raw_probability = (
+        calibrated_probability
+        if favored_side == "A"
+        else 1.0 - calibrated_probability
+    )
     resolved_favored_probability = (
         favored_probability
         if favored_probability is not None
@@ -363,11 +363,7 @@ def _segment_values(
     diagnostics: Iterable[SegmentDiagnosticRow],
     segment_name: str,
 ) -> set[str]:
-    return {
-        row.segment_value
-        for row in diagnostics
-        if row.segment_name == segment_name
-    }
+    return {row.segment_value for row in diagnostics if row.segment_name == segment_name}
 
 
 def _find_segment_row(

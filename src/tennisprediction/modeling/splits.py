@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
+from typing import cast
 
 from tennisprediction.config import Settings
 from tennisprediction.modeling.schemas import (
@@ -27,11 +28,7 @@ def freeze_chronological_splits(
 ) -> FrozenSplitManifest:
     _validate_boundary_order(boundary_config)
 
-    train_rows = [
-        row
-        for row in dataset.rows
-        if row.as_of_date <= boundary_config.train_end_date
-    ]
+    train_rows = [row for row in dataset.rows if row.as_of_date <= boundary_config.train_end_date]
     validation_rows = [
         row
         for row in dataset.rows
@@ -59,11 +56,8 @@ def freeze_chronological_splits(
         window_name="test",
     )
 
-    if (
-        train_window.row_count
-        + validation_window.row_count
-        + test_window.row_count
-        != len(dataset.rows)
+    if train_window.row_count + validation_window.row_count + test_window.row_count != len(
+        dataset.rows
     ):
         msg = "split windows must partition the full ordered dataset"
         raise ValueError(msg)
@@ -78,6 +72,15 @@ def freeze_chronological_splits(
         split_id=split_id,
         feature_version=dataset.feature_version,
         label_definition=dataset.label_definition,
+        source_repo=_common_source_value(dataset=dataset, field_name="lineage_source_repo"),
+        source_commit_sha=_common_source_value(
+            dataset=dataset,
+            field_name="lineage_source_commit_sha",
+        ),
+        source_snapshot_root=_common_source_value(
+            dataset=dataset,
+            field_name="lineage_source_snapshot_root",
+        ),
         train_end_date=boundary_config.train_end_date,
         validation_end_date=boundary_config.validation_end_date,
         test_end_date=boundary_config.test_end_date,
@@ -139,3 +142,15 @@ def _validate_boundary_order(boundary_config: SplitBoundaryConfig) -> None:
     ):
         msg = "split boundary dates must be strictly increasing"
         raise ValueError(msg)
+
+
+def _common_source_value(
+    *,
+    dataset: FrozenModelingDataset,
+    field_name: str,
+) -> str:
+    values = {getattr(row, field_name) for row in dataset.rows}
+    if len(values) != 1:
+        msg = f"dataset rows must share one {field_name} value"
+        raise ValueError(msg)
+    return cast(str, next(iter(values)))

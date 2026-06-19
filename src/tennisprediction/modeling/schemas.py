@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict
@@ -45,6 +46,9 @@ class FrozenSplitManifest(BaseModel):
     split_id: str
     feature_version: str
     label_definition: str
+    source_repo: str
+    source_commit_sha: str
+    source_snapshot_root: str
     train_end_date: str
     validation_end_date: str
     test_end_date: str
@@ -151,3 +155,50 @@ class ProbabilityMetrics:
     calibration_bins: list[CalibrationBin]
     calibration_curve: list[CalibrationCurvePoint]
     calibration_curve_artifact: str
+
+
+@dataclass(frozen=True)
+class SegmentDiagnosticRow:
+    segment_name: str
+    segment_value: str
+    sample_count: int
+    win_rate: float
+    accuracy: float
+    mean_calibrated_probability: float
+    mean_favored_probability: float
+
+
+class ModelArtifactManifest(BaseModel):
+    run_id: str
+    model_name: str
+    model_family: str
+    source_repo: str
+    source_commit_sha: str
+    source_version_label: str | None
+    feature_version: str
+    split_manifest_id: str
+    split_boundaries: dict[str, str]
+    model_params: dict[str, FeatureValue]
+    calibrator_metadata: dict[str, FeatureValue]
+    metrics_provenance: dict[str, FeatureValue]
+    dependency_versions: dict[str, str]
+    feature_columns_file: str
+    split_manifest_file: str
+    raw_model_file: str
+    raw_model_sha256: str
+    preprocessor_file: str | None = None
+    calibrator_file: str
+    calibrator_sha256: str
+    report_files: dict[str, str]
+
+    model_config = ConfigDict(frozen=True)
+
+
+@dataclass(frozen=True)
+class LoadedModelArtifactBundle:
+    artifact_dir: Path
+    manifest: ModelArtifactManifest
+    feature_columns: list[str]
+    split_manifest: FrozenSplitManifest
+    raw_estimator: Any
+    calibrator: Any
