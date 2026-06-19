@@ -13,12 +13,19 @@ from tennisprediction.modeling.baselines import (
     fit_random_forest_baseline,
 )
 from tennisprediction.modeling.datasets import materialize_modeling_dataset
-from tennisprediction.modeling.schemas import FrozenModelingDataset, FrozenSplitManifest, FrozenSplitWindow
+from tennisprediction.modeling.schemas import (
+    FrozenModelingDataset,
+    FrozenSplitManifest,
+    FrozenSplitWindow,
+)
 from tennisprediction.modeling.splits import (
     SplitBoundaryConfig,
     freeze_chronological_splits,
 )
-from tests.unit.modeling_fixtures import build_synthetic_modeling_fixture, membership_sha256
+from tests.unit.modeling_fixtures import (
+    build_synthetic_modeling_fixture,
+    membership_sha256,
+)
 
 
 def test_ml_dependency_group_imports_approved_runtime() -> None:
@@ -78,7 +85,7 @@ def test_fit_random_forest_baseline_preserves_feature_contract_and_metadata(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     dataset, manifest_path, manifest = _build_dataset_and_manifest(tmp_path, monkeypatch)
-    custom_train_ids = manifest.train.canonical_match_ids[1::3]
+    custom_train_ids = manifest.train.canonical_match_ids[::2]
     custom_manifest = manifest.model_copy(
         update={
             "train": _window_for_ids(dataset=dataset, canonical_match_ids=custom_train_ids),

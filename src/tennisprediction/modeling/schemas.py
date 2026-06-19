@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
@@ -52,3 +53,20 @@ class FrozenSplitManifest(BaseModel):
     test: FrozenSplitWindow
 
     model_config = ConfigDict(frozen=True)
+
+
+@dataclass(frozen=True)
+class RawModelFitResult:
+    model_name: str
+    model_family: str
+    feature_columns: list[str]
+    split_manifest_path: str
+    train_row_count: int
+    validation_row_count: int
+    test_row_count: int
+    validation_probabilities: list[float]
+    test_probabilities: list[float]
+    model_params: dict[str, FeatureValue]
+    trained_estimator: Any
+    raw_model_artifact_path: str | None
+    fit_metadata: dict[str, FeatureValue]

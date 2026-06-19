@@ -53,3 +53,7 @@ python_version = "3.12"
 strict = true
 mypy_path = ["src"]
 packages = ["tennisprediction"]
+
+[[tool.mypy.overrides]]
+module = ["pandas", "pandas.*", "sklearn", "sklearn.*"]
+ignore_missing_imports = true
