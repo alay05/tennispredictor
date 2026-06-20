@@ -20,8 +20,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation and ATP Data Contracts** - Establish the typed project, Sackmann source lineage, ATP-only scope rules, and canonical data tables.
 - [x] **Phase 2: Leakage-Safe Feature Engine** - Produce chronological pre-match feature snapshots with leakage tests as a phase gate. (completed 2026-06-18)
 - [x] **Phase 3: Modeling, Calibration, and Artifact Registry** - Train benchmark and production-candidate models with calibrated probabilities and reproducible artifacts. (completed 2026-06-19)
-- [ ] **Phase 4: Backtesting and EV Decision Core** - Replay predictions and EV decisions with provenance-aware betting evidence.
-- [ ] **Phase 5: Kalshi Read-Only Market Integration** - Collect and persist Kalshi-only market, detail, and orderbook snapshots without execution surfaces.
+- [x] **Phase 4: Backtesting and EV Decision Core** - Replay predictions and EV decisions with provenance-aware betting evidence.
+- [x] **Phase 5: Kalshi Read-Only Market Integration** - Collect and persist Kalshi-only market, detail, and orderbook snapshots without execution surfaces.
 - [ ] **Phase 6: Market Mapping, Executable Pricing, and Live EV Monitor** - Map ATP markets, compute executable EV, and rank live or shadow-mode opportunities.
 - [ ] **Phase 7: Alerts and Operational Hardening** - Deliver auditable opportunity reports, CLI operations, quality gates, and v1 documentation.
 
@@ -144,9 +144,9 @@ Plans:
 
 Plans:
 
-- [ ] 05-01: Kalshi read client, authentication, and normalized DTO interfaces
-- [ ] 05-02: Snapshot persistence for markets, details, orderbooks, and request metadata
-- [ ] 05-03: Pagination, retry, rate-limit, market-state handling, and read-only job guardrails
+- [x] 05-01: Kalshi read client, authentication, and normalized DTO interfaces
+- [x] 05-02: Snapshot persistence for markets, details, orderbooks, and request metadata
+- [x] 05-03: Pagination, retry, rate-limit, market-state handling, and read-only job guardrails
 
 ### Phase 6: Market Mapping, Executable Pricing, and Live EV Monitor
 
@@ -204,7 +204,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Foundation and ATP Data Contracts | 4/4 | Complete | 2026-06-16 |
 | 2. Leakage-Safe Feature Engine | 5/5 | Complete    | 2026-06-18 |
 | 3. Modeling, Calibration, and Artifact Registry | 4/4 | Complete   | 2026-06-19 |
-| 4. Backtesting and EV Decision Core | 0/3 | Not started | - |
-| 5. Kalshi Read-Only Market Integration | 0/3 | Not started | - |
+| 4. Backtesting and EV Decision Core | 3/3 | Complete | 2026-06-20 |
+| 5. Kalshi Read-Only Market Integration | 3/3 | Complete | 2026-06-20 |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | Not started | - |
 | 7. Alerts and Operational Hardening | 0/4 | Not started | - |

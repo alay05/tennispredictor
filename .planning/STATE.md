@@ -5,13 +5,13 @@ milestone_name: milestone
 status: completed
 stopped_at: Completed 04-03-PLAN.md
 last_updated: "2026-06-20T00:00:00Z"
-last_activity: 2026-06-20 -- Phase 04 marked complete
+last_activity: 2026-06-20 -- Phase 05 marked complete
 progress:
   total_phases: 7
-  completed_phases: 4
-  total_plans: 16
-  completed_plans: 16
-  percent: 57
+  completed_phases: 5
+  total_plans: 19
+  completed_plans: 19
+  percent: 71
 ---
 
 # Project State
@@ -22,16 +22,16 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 **Core value:** Produce trustworthy, leakage-free ATP match win probabilities and convert them into actionable Kalshi-only positive expected value signals.
 **Current milestone:** v1.0 MVP
-**Current focus:** Phase 04 — backtesting-and-ev-decision-core
+**Current focus:** Phase 05 — kalshi-read-only-market-integration
 
 ## Current Position
 
-Phase: 04 — COMPLETE
+Phase: 05 — COMPLETE
 Plan: 3 of 3
-Status: Phase 04 complete
-Last activity: 2026-06-20 -- Phase 04 marked complete
+Status: Phase 05 complete
+Last activity: 2026-06-20 -- Phase 05 marked complete
 
-Progress: [████░░░░░░] 43%
+Progress: [███████░░░] 71%
 
 ## Performance Metrics
 
@@ -49,7 +49,7 @@ Progress: [████░░░░░░] 43%
 | 2. Leakage-Safe Feature Engine | 5/5 | 0.1h | 3 min |
 | 3. Modeling, Calibration, and Artifact Registry | 4/4 | 0.4h | 6 min |
 | 4. Backtesting and EV Decision Core | 3/3 | 0.3h | 6 min |
-| 5. Kalshi Read-Only Market Integration | 0/3 | 0.0h | N/A |
+| 5. Kalshi Read-Only Market Integration | 3/3 | 0.4h | 8 min |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | 0.0h | N/A |
 | 7. Alerts and Operational Hardening | 0/4 | 0.0h | N/A |
 **Recent Trend:**
@@ -104,7 +104,6 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 5]: Validate current Kalshi auth, endpoint behavior, rate limits, and ATP market availability during phase planning.
 - [Phase 6]: Validate Kalshi ATP naming, settlement wording, side orientation, and executable pricing assumptions against actual payloads.
 
 ## Deferred Items
