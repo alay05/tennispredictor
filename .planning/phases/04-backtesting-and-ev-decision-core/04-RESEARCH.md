@@ -20,7 +20,7 @@
 | ID | Description | Research Support |
 |----|-------------|------------------|
 | BKT-01 | System replays historical predictions using frozen chronological model artifacts and feature snapshots. [CITED: .planning/REQUIREMENTS.md] | Load the Phase 03 artifact bundle by manifest, rematerialize the Phase 03 dataset from persisted Phase 02 `feature_differential_rows`, enforce `feature_version` and `split_manifest_id`, then regenerate predictions through the saved raw estimator plus saved calibrator instead of trusting cached probabilities alone. [CITED: src/tennisprediction/modeling/registry.py] [CITED: src/tennisprediction/modeling/datasets.py] [CITED: src/tennisprediction/modeling/schemas.py] |
-| BKT-02 | System implements market probability, edge, expected value, confidence, liquidity, and threshold filtering as reusable decision logic. [CITED: .planning/REQUIREMENTS.md] | Keep decision math in a project-owned backtesting module that consumes normalized, side-aligned market inputs and model outputs. Do not entangle it with HTTP clients or raw Kalshi payload parsing. [CITED: .planning/ROADMAP.md] [CITED: https://docs.kalshi.com/api-reference/market/get-market] [CITED: https://docs.kalshi.com/getting_started/orderbook_responses] [ASSUMED] |
+| BKT-02 | System implements market probability, edge, expected value, confidence, liquidity, and threshold filtering as reusable decision logic. [CITED: .planning/REQUIREMENTS.md] | Keep decision math in a project-owned backtesting module that consumes normalized positive-side market inputs and model outputs. Do not entangle it with HTTP clients or raw Kalshi payload parsing. [CITED: .planning/ROADMAP.md] [CITED: https://docs.kalshi.com/api-reference/market/get-market] [CITED: https://docs.kalshi.com/getting_started/orderbook_responses] [ASSUMED] |
 | BKT-03 | System records accepted and rejected opportunities with reason codes. [CITED: .planning/REQUIREMENTS.md] | Persist two explicit record surfaces, accepted and rejected, with threshold snapshots, selected side, price source, provenance label, and rejection reason codes rather than silently dropping failed candidates. [CITED: .planning/ROADMAP.md] [ASSUMED] |
 | BKT-04 | System calculates ROI, profit curve, win rate, average edge, max drawdown, sample size, and backtest provenance. [CITED: .planning/REQUIREMENTS.md] | Persist a run summary plus time-ordered equity-curve data derived from settled replay records; max drawdown should be computed from the cumulative-profit peak-to-trough path, not from unordered aggregates. [CITED: .planning/ROADMAP.md] [ASSUMED] |
 | BKT-05 | System labels every market/EV backtest as actual Kalshi historical data, collected snapshot replay, or synthetic/proxy assumptions. [CITED: .planning/REQUIREMENTS.md] | Make provenance a required run-level and row-level field, with a closed enum and report bannering before any profitability numbers are shown. [CITED: .planning/ROADMAP.md] [CITED: https://docs.kalshi.com/getting_started/historical_data] [ASSUMED] |
@@ -349,19 +349,13 @@ artifact_bundle = load_model_artifact_bundle(
 ## Open Questions
 
 1. **What exact field should drive `min_liquidity` before Phase 06?**
-   - What we know: Kalshi docs expose `liquidity_dollars`, orderbook bid sizes, open interest, and candlestick volume fields. [CITED: https://docs.kalshi.com/api-reference/market/get-market] [CITED: https://docs.kalshi.com/getting_started/orderbook_responses] [CITED: https://docs.kalshi.com/api-reference/historical/get-historical-market-candlesticks]
-   - What’s unclear: Which of those is the project’s canonical liquidity threshold input.
-   - Recommendation: Phase 04 should accept normalized liquidity plus `liquidity_source`, and Phase 06 should lock the derivation rule from raw Kalshi data. [CITED: .planning/ROADMAP.md] [ASSUMED]
+   - Resolution: Phase 04 uses normalized `available_liquidity_dollars` and records `liquidity_source` separately. Raw orderbook-derived liquidity stays deferred to Phase 06. [CITED: .planning/ROADMAP.md] [ASSUMED]
 
 2. **Should Phase 04 replay only the test window or support arbitrary manifest windows?**
-   - What we know: Phase 03 artifacts persist train/validation/test memberships and test prediction outputs. [CITED: src/tennisprediction/modeling/schemas.py] [CITED: src/tennisprediction/modeling/reports.py]
-   - What’s unclear: Whether planners want Phase 04 to backtest only out-of-sample test rows or also validation rows for sensitivity analysis.
-   - Recommendation: Make test-window replay the default and only profitability-claimable mode; allow validation replay only as a clearly labeled diagnostic mode. [ASSUMED]
+   - Resolution: Test-window replay is the default and only profitability-claimable mode. Validation replay remains available as a clearly labeled diagnostic mode, but it does not produce profitability claims. [CITED: src/tennisprediction/modeling/schemas.py] [CITED: src/tennisprediction/modeling/reports.py] [ASSUMED]
 
 3. **Which market-price source should be canonical once real Kalshi data exists?**
-   - What we know: Kalshi exposes current bid/ask fields, last price, orderbook bids, and historical candlestick prices. [CITED: https://docs.kalshi.com/api-reference/market/get-market] [CITED: https://docs.kalshi.com/getting_started/orderbook_responses] [CITED: https://docs.kalshi.com/api-reference/historical/get-historical-market-candlesticks]
-   - What’s unclear: Whether the project wants bid, ask-implied, midpoint, last trade, or candlestick close for Phase 04 backtests.
-   - Recommendation: Phase 04 should make the source explicit on every record and avoid hardcoding precedence until Phase 06 executable-pricing work settles it. [CITED: .planning/ROADMAP.md] [ASSUMED]
+   - Resolution: Phase 04 makes `market_probability_source` explicit on every record and uses it to record the normalized pricing basis. MVP fixtures use `normalized_positive_side`; raw Kalshi field precedence is deferred to Phase 06 executable-pricing work. [CITED: .planning/ROADMAP.md] [ASSUMED]
 
 ## Environment Availability
 

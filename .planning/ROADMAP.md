@@ -122,9 +122,9 @@ Plans:
 
 Plans:
 
-- [ ] 04-01-PLAN.md — Frozen-artifact replay harness and deterministic probability regeneration
-- [ ] 04-02-PLAN.md — Side-symmetric EV decision engine and reason-coded opportunity records
-- [ ] 04-03-PLAN.md — Backtest metrics, provenance labels, and guarded profitability reports
+- [x] 04-01-PLAN.md — Frozen-artifact replay harness and deterministic probability regeneration
+- [x] 04-02-PLAN.md — Side-symmetric EV decision engine and reason-coded opportunity records
+- [x] 04-03-PLAN.md — Backtest metrics, provenance labels, and guarded profitability reports
 
 ### Phase 5: Kalshi Read-Only Market Integration
 

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-06-19T14:28:58.629Z"
-last_activity: 2026-06-19 -- Phase 03 marked complete
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-06-20T00:00:00Z"
+last_activity: 2026-06-20 -- Phase 04 marked complete
 progress:
   total_phases: 7
-  completed_phases: 3
-  total_plans: 13
-  completed_plans: 13
-  percent: 43
+  completed_phases: 4
+  total_plans: 16
+  completed_plans: 16
+  percent: 57
 ---
 
 # Project State
@@ -22,14 +22,14 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 **Core value:** Produce trustworthy, leakage-free ATP match win probabilities and convert them into actionable Kalshi-only positive expected value signals.
 **Current milestone:** v1.0 MVP
-**Current focus:** Phase 03 — modeling-calibration-and-artifact-registry
+**Current focus:** Phase 04 — backtesting-and-ev-decision-core
 
 ## Current Position
 
-Phase: 03 — COMPLETE
-Plan: 4 of 4
-Status: Phase 03 complete
-Last activity: 2026-06-19 -- Phase 03 marked complete
+Phase: 04 — COMPLETE
+Plan: 3 of 3
+Status: Phase 04 complete
+Last activity: 2026-06-20 -- Phase 04 marked complete
 
 Progress: [████░░░░░░] 43%
 
@@ -48,18 +48,21 @@ Progress: [████░░░░░░] 43%
 | 1. Foundation and ATP Data Contracts | 4/4 | 0.0h | N/A |
 | 2. Leakage-Safe Feature Engine | 5/5 | 0.1h | 3 min |
 | 3. Modeling, Calibration, and Artifact Registry | 4/4 | 0.4h | 6 min |
-| 4. Backtesting and EV Decision Core | 0/3 | 0.0h | N/A |
+| 4. Backtesting and EV Decision Core | 3/3 | 0.3h | 6 min |
 | 5. Kalshi Read-Only Market Integration | 0/3 | 0.0h | N/A |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | 0.0h | N/A |
 | 7. Alerts and Operational Hardening | 0/4 | 0.0h | N/A |
 **Recent Trend:**
 
-- Last 5 plans: 02-05, 03-01, 03-02, 03-03, 03-04
-- Trend: Phase 03 now includes frozen datasets, baselines, calibrated probabilities, and trusted artifact bundles
+- Last 5 plans: 03-03, 03-04, 04-01, 04-02, 04-03
+- Trend: Phase 04 now includes trusted replay, side-symmetric EV decisions, and guarded backtest reporting
 
 | Phase 03 P02 | 5min | 3 tasks | 6 files |
 | Phase 03 P03 | 9min | 2 tasks | 7 files |
 | Phase 03 P04 | 6min | 2 tasks | 8 files |
+| Phase 04 P01 | 4min | 2 tasks | 4 files |
+| Phase 04 P02 | 4min | 2 tasks | 4 files |
+| Phase 04 P03 | 4min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
