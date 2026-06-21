@@ -29,9 +29,9 @@ def test_alias_artifact_default_path_is_version_controlled_src_file() -> None:
     assert not resolved_path.is_relative_to(Settings().data_dir)
 
 
-def test_alias_rows_require_all_audit_fields() -> None:
+def test_alias_rows_require_all_audit_fields(tmp_path: Path) -> None:
     artifact_path = _write_alias_artifact(
-        Path(pytest.ensuretemp("market_mapping_aliases_missing_field")),
+        tmp_path,
         [
             {
                 "raw_market_name": "Alex De Minaur",
@@ -48,18 +48,20 @@ def test_alias_rows_require_all_audit_fields() -> None:
         load_player_alias_overrides(artifact_path)
 
 
-def test_load_player_alias_overrides_reads_empty_auditable_artifact() -> None:
+def test_load_player_alias_overrides_reads_empty_auditable_artifact(tmp_path: Path) -> None:
     artifact_path = _write_alias_artifact(
-        Path(pytest.ensuretemp("market_mapping_aliases_empty")),
+        tmp_path,
         [],
     )
 
     assert load_player_alias_overrides(artifact_path) == {}
 
 
-def test_lookup_player_alias_override_is_additive_for_raw_and_normalized_names() -> None:
+def test_lookup_player_alias_override_is_additive_for_raw_and_normalized_names(
+    tmp_path: Path,
+) -> None:
     artifact_path = _write_alias_artifact(
-        Path(pytest.ensuretemp("market_mapping_aliases_additive")),
+        tmp_path,
         [
             {
                 "raw_market_name": "A. de Minaur",
@@ -85,9 +87,9 @@ def test_lookup_player_alias_override_is_additive_for_raw_and_normalized_names()
     assert lookup_player_alias_override("Completely Unknown", overrides) is None
 
 
-def test_duplicate_alias_rows_fail_loudly_without_rewriting_canonical_ids() -> None:
+def test_duplicate_alias_rows_fail_loudly_without_rewriting_canonical_ids(tmp_path: Path) -> None:
     artifact_path = _write_alias_artifact(
-        Path(pytest.ensuretemp("market_mapping_aliases_duplicates")),
+        tmp_path,
         [
             {
                 "raw_market_name": "A. de Minaur",
