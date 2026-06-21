@@ -14,6 +14,7 @@ class SideEvaluation:
     side: Literal["positive", "negative"]
     model_probability: float
     market_probability: float | None
+    entry_price: float | None
     confidence: float
     edge: float | None
     expected_value_per_contract: float | None
@@ -29,8 +30,9 @@ def evaluate_candidate_side(
     available_liquidity_dollars: float | None,
     thresholds: DecisionThresholds,
     provenance_label: object,
+    rejection_reason_codes: tuple[str, ...] = (),
 ) -> SideEvaluation:
-    reason_codes: list[str] = []
+    reason_codes: list[str] = list(rejection_reason_codes)
     if not _is_supported_provenance(provenance_label):
         reason_codes.append("unsupported_provenance")
 
@@ -63,6 +65,7 @@ def evaluate_candidate_side(
         side=side,
         model_probability=model_probability,
         market_probability=market_probability,
+        entry_price=market_probability,
         confidence=model_probability,
         edge=edge,
         expected_value_per_contract=expected_value_per_contract,

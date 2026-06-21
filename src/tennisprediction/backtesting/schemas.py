@@ -81,6 +81,32 @@ class NormalizedMarketInput:
 
 
 @dataclass(frozen=True)
+class ExecutableSideInput:
+    kalshi_side: Literal["yes", "no"]
+    canonical_player_id: str | None
+    maps_to_player_a: bool | None
+    entry_price: float | None = None
+    entry_price_source: str = ""
+    available_liquidity_dollars: float | None = None
+    liquidity_source: str = ""
+    freshness_age_seconds: float | None = None
+    freshness_source: str = ""
+    rejection_reason_codes: tuple[str, ...] = field(default_factory=tuple)
+
+
+@dataclass(frozen=True)
+class ExecutableMarketInput:
+    canonical_match_id: str
+    market_ticker: str
+    positive_side: Literal["yes", "no"]
+    negative_side: Literal["yes", "no"]
+    yes_side: ExecutableSideInput
+    no_side: ExecutableSideInput
+    provenance_label: BacktestProvenanceLabel | str
+    assumption_notes: str = ""
+
+
+@dataclass(frozen=True)
 class OpportunityDecisionRecord:
     artifact_run_id: str
     canonical_match_id: str
@@ -102,6 +128,10 @@ class OpportunityDecisionRecord:
     provenance_label: BacktestProvenanceLabel | str
     threshold_snapshot: dict[str, Any]
     accepted: bool
+    selected_entry_price: float | None = None
+    entry_price_source: str = ""
+    freshness_age_seconds: float | None = None
+    freshness_source: str = ""
     rejection_reason_codes: tuple[str, ...] = field(default_factory=tuple)
     realized_outcome: int | None = None
     realized_pnl: float | None = None

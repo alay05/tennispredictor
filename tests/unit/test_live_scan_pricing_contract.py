@@ -12,7 +12,8 @@ from tennisprediction.backtesting.schemas import (
 from tennisprediction.ev.opportunity import evaluate_opportunities
 
 
-def test_evaluate_opportunities_uses_explicit_no_entry_price_and_preserves_pricing_evidence() -> None:
+def test_evaluate_opportunities_uses_explicit_no_entry_price_and_preserves_pricing_evidence(
+) -> None:
     replay_row = _replay_row(calibrated_probability=0.61, target=0)
     thresholds = DecisionThresholds(
         min_edge=0.05,
@@ -79,7 +80,10 @@ def test_evaluate_opportunities_uses_explicit_no_entry_price_and_preserves_prici
     assert record.rejection_reason_codes == ()
     assert record.threshold_snapshot["selected_entry_price"] == pytest.approx(0.28)
     assert record.threshold_snapshot["entry_price_source"] == "reciprocal_yes_bid_top_of_book"
-    assert record.threshold_snapshot["liquidity_source"] == "top_of_book_notional_from_yes_bid_quantity"
+    assert (
+        record.threshold_snapshot["liquidity_source"]
+        == "top_of_book_notional_from_yes_bid_quantity"
+    )
     assert record.threshold_snapshot["freshness_age_seconds"] == pytest.approx(30.0)
     assert record.threshold_snapshot["freshness_source"] == "orderbook_collected_at_utc"
     assert record.threshold_snapshot["fee_per_contract"] == pytest.approx(0.02)

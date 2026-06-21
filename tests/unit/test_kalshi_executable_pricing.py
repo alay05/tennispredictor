@@ -15,7 +15,8 @@ from tennisprediction.market_mapping.schemas import (
 )
 
 
-def test_derive_executable_market_input_uses_reciprocal_bid_ladders_and_top_of_book_notional() -> None:
+def test_derive_executable_market_input_uses_reciprocal_bid_ladders_and_top_of_book_notional(
+) -> None:
     collected_at = datetime(2024, 6, 20, 14, 0, 0)
     evaluated_at = datetime(2024, 6, 20, 14, 0, 45)
     market_input = derive_executable_market_input(
