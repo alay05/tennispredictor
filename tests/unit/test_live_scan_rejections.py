@@ -5,12 +5,15 @@ from pathlib import Path
 
 import pytest
 
-from tennisprediction.market_mapping.resolver import require_matched_mapping, resolve_kalshi_market_mappings
+from tennisprediction.market_mapping.resolver import (
+    require_matched_mapping,
+    resolve_kalshi_market_mappings,
+)
 from tennisprediction.market_mapping.schemas import MappingConfidenceTier
 from tests.unit.test_market_mapping_resolver import _seed_mapping_database
 
 
-def test_require_matched_mapping_returns_explicit_unscorable_records_for_unmatched_and_manual_review_rows(
+def test_require_matched_mapping_rejects_unmatched_and_manual_review_rows(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

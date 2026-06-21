@@ -9,7 +9,11 @@ import duckdb
 import pytest
 
 import tennisprediction.config as config_module
-from tennisprediction.kalshi.schemas import KalshiMarketDetailDTO, KalshiMarketDTO, KalshiRequestMetadata
+from tennisprediction.kalshi.schemas import (
+    KalshiMarketDetailDTO,
+    KalshiMarketDTO,
+    KalshiRequestMetadata,
+)
 from tennisprediction.kalshi.snapshots import (
     build_market_detail_snapshot_row,
     build_market_snapshot_row,
@@ -20,10 +24,13 @@ from tennisprediction.market_mapping.resolver import (
     persist_market_mapping_evidence,
     resolve_kalshi_market_mappings,
 )
-from tennisprediction.market_mapping.schemas import MappingConfidenceTier, MarketMappingState
+from tennisprediction.market_mapping.schemas import (
+    MappingConfidenceTier,
+    MarketMappingState,
+)
 
 
-def test_resolve_kalshi_market_mappings_marks_exact_same_day_player_pair_as_matched_and_persists_side_orientation(
+def test_resolver_matches_same_day_pair_and_persists_side_orientation(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -428,7 +435,10 @@ def _seed_mapping_database(
             """
         )
         connection.executemany(
-            "insert into canonical_matches values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "insert into canonical_matches values "
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            ),
             [
                 (
                     row["canonical_match_id"],
@@ -520,12 +530,16 @@ def _persist_kalshi_market_snapshot(
         KalshiMarketDetailDTO(market=market, request_metadata=request_metadata),
     )
     persist_kalshi_snapshot_batch(
-        batch=type("SnapshotBatch", (), {
-            "request_logs": (request_log,),
-            "market_snapshots": (batch,),
-            "market_detail_snapshots": (detail,),
-            "orderbook_snapshots": (),
-        })(),
+        batch=type(
+            "SnapshotBatch",
+            (),
+            {
+                "request_logs": (request_log,),
+                "market_snapshots": (batch,),
+                "market_detail_snapshots": (detail,),
+                "orderbook_snapshots": (),
+            },
+        )(),
         database_path=database_path,
     )
 
