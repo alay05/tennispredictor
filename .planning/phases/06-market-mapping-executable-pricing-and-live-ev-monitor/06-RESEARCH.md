@@ -384,17 +384,13 @@ result = replay_model_predictions(
 | A2 | Warning signs such as “both sides profitable at once” and “totals do not reconcile” are useful early indicators for scoring bugs. [ASSUMED] | Common Pitfalls | Low — they are operational heuristics, not implementation contracts. |
 | A3 | Phase 06 should not add a separate ad hoc live scoring path. [ASSUMED] | State of the Art | Medium — if later constraints require online-only features, the planner may need an extra abstraction layer. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Should executable liquidity default to top-of-book only or sum immediately executable levels?**
-   - What we know: D-11 allows either approach if the source label and evidence payload stay explicit. [CITED: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md]
-   - What's unclear: the locked decisions do not choose the MVP default. [CITED: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md]
-   - Recommendation: plan top-of-book first because the schema works for both modes and top-of-book minimizes hidden slippage assumptions. [CITED: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md] [ASSUMED]
+1. **Executable liquidity default**
+   - Resolution: MVP executable liquidity should default to top-of-book only. This preserves D-11's explicit-source requirement, minimizes hidden slippage assumptions, and still leaves room for later multi-level aggregation under a different `liquidity_source` label. [CITED: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md] [ASSUMED]
 
-2. **What date window should satisfy market-to-match timing alignment?**
-   - What we know: D-06 requires timing alignment as part of the `matched` state, and D-07 requires fail-closed mapping states. [CITED: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md]
-   - What's unclear: the exact allowed window is not locked in CONTEXT.md. [CITED: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md]
-   - Recommendation: plan an explicit helper with reason-coded failures and start with same-date matching plus a narrow configurable fallback only if real Kalshi titles require it. [CITED: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md] [ASSUMED]
+2. **Market-to-match timing alignment window**
+   - Resolution: MVP timing alignment should start with same-date canonical-match matching only, with fail-closed reason-coded misses instead of automatically widening the window. A configurable fallback can be introduced later only if real Kalshi ATP winner titles prove same-date matching insufficient. [CITED: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md] [ASSUMED]
 
 ## Environment Availability
 

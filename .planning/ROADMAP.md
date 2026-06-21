@@ -163,13 +163,22 @@ Plans:
   5. Operator can view ranked opportunities ordered by expected value, edge, liquidity, confidence, and configured thresholds.
 
 **Plans:** 4 plans
-
 Plans:
+**Wave 1**
 
-- [ ] 06-01: Deterministic player normalization and auditable alias overrides
-- [ ] 06-02: Kalshi market-to-ATP match mapping states and ambiguity rejection
-- [ ] 06-03: Executable price, implied probability, edge, EV, liquidity, and freshness calculations
-- [ ] 06-04: Live or shadow-mode scan and ranked opportunity monitor
+- [ ] 06-01-PLAN.md — Deterministic player normalization and auditable alias overrides
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 06-02-PLAN.md — Kalshi market-to-ATP match mapping states and ambiguity rejection
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 06-03-PLAN.md — Executable price, implied probability, edge, EV, liquidity, and freshness calculations
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 06-04-PLAN.md — Live or shadow-mode scan and ranked opportunity monitor
 
 ### Phase 7: Alerts and Operational Hardening
 
