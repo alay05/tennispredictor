@@ -24,16 +24,46 @@ def replay_model_predictions(
         expected_feature_version=expected_feature_version,
         expected_split_manifest_id=expected_split_manifest_id,
     )
+    replay_rows = predict_matches_for_canonical_ids(
+        artifact_dir,
+        database_path,
+        canonical_match_ids=tuple(bundle.split_manifest.test.canonical_match_ids),
+        expected_feature_version=expected_feature_version,
+        expected_split_manifest_id=expected_split_manifest_id,
+    )
+    _validate_saved_predictions(bundle.manifest.run_id, replay_rows)
+
+    return ReplayRunResult(
+        artifact_run_id=bundle.manifest.run_id,
+        artifact_dir=Path(bundle.artifact_dir),
+        feature_version=bundle.manifest.feature_version,
+        split_manifest_id=bundle.manifest.split_manifest_id,
+        source_commit_sha=bundle.manifest.source_commit_sha,
+        rows=replay_rows,
+        parity_checked=_saved_predictions_exist(bundle.manifest.run_id),
+    )
+
+
+def predict_matches_for_canonical_ids(
+    artifact_dir: str | Path,
+    database_path: str | Path,
+    *,
+    canonical_match_ids: tuple[str, ...],
+    expected_feature_version: str,
+    expected_split_manifest_id: str,
+) -> list[ReplayPredictionRow]:
+    bundle = load_model_artifact_bundle(
+        artifact_dir,
+        expected_feature_version=expected_feature_version,
+        expected_split_manifest_id=expected_split_manifest_id,
+    )
     dataset = materialize_modeling_dataset(
         database_path=database_path,
         feature_version=expected_feature_version,
     )
 
     row_lookup = {row.canonical_match_id: row for row in dataset.rows}
-    ordered_rows = [
-        row_lookup[canonical_match_id]
-        for canonical_match_id in bundle.split_manifest.test.canonical_match_ids
-    ]
+    ordered_rows = [row_lookup[canonical_match_id] for canonical_match_id in canonical_match_ids]
 
     feature_frame = _build_feature_frame(
         ordered_rows=ordered_rows,
@@ -46,7 +76,7 @@ def replay_model_predictions(
         bundle.calibrator.predict_proba(feature_frame)
     )
 
-    replay_rows = [
+    return [
         ReplayPredictionRow(
             artifact_run_id=bundle.manifest.run_id,
             model_name=bundle.manifest.model_name,
@@ -78,18 +108,6 @@ def replay_model_predictions(
             strict=True,
         )
     ]
-
-    _validate_saved_predictions(bundle.manifest.run_id, replay_rows)
-
-    return ReplayRunResult(
-        artifact_run_id=bundle.manifest.run_id,
-        artifact_dir=Path(bundle.artifact_dir),
-        feature_version=bundle.manifest.feature_version,
-        split_manifest_id=bundle.manifest.split_manifest_id,
-        source_commit_sha=bundle.manifest.source_commit_sha,
-        rows=replay_rows,
-        parity_checked=_saved_predictions_exist(bundle.manifest.run_id),
-    )
 
 
 def _build_feature_frame(

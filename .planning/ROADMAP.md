@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Modeling, Calibration, and Artifact Registry** - Train benchmark and production-candidate models with calibrated probabilities and reproducible artifacts. (completed 2026-06-19)
 - [x] **Phase 4: Backtesting and EV Decision Core** - Replay predictions and EV decisions with provenance-aware betting evidence.
 - [x] **Phase 5: Kalshi Read-Only Market Integration** - Collect and persist Kalshi-only market, detail, and orderbook snapshots without execution surfaces.
-- [ ] **Phase 6: Market Mapping, Executable Pricing, and Live EV Monitor** - Map ATP markets, compute executable EV, and rank live or shadow-mode opportunities.
+- [x] **Phase 6: Market Mapping, Executable Pricing, and Live EV Monitor** - Map ATP markets, compute executable EV, and rank live or shadow-mode opportunities. (completed 2026-06-21)
 - [ ] **Phase 7: Alerts and Operational Hardening** - Deliver auditable opportunity reports, CLI operations, quality gates, and v1 documentation.
 
 ## Phase Details
@@ -162,23 +162,23 @@ Plans:
   4. Live or shadow-mode predictions reuse the same feature and model interfaces used for training and backtesting.
   5. Operator can view ranked opportunities ordered by expected value, edge, liquidity, confidence, and configured thresholds.
 
-**Plans:** 4 plans
+**Plans:** 4/4 plans complete
 Plans:
 **Wave 1**
 
-- [ ] 06-01-PLAN.md — Deterministic player normalization and auditable alias overrides
+- [x] 06-01-PLAN.md — Deterministic player normalization and auditable alias overrides
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 06-02-PLAN.md — Kalshi market-to-ATP match mapping states and ambiguity rejection
+- [x] 06-02-PLAN.md — Kalshi market-to-ATP match mapping states and ambiguity rejection
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 06-03-PLAN.md — Executable price, implied probability, edge, EV, liquidity, and freshness calculations
+- [x] 06-03-PLAN.md — Executable price, implied probability, edge, EV, liquidity, and freshness calculations
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 06-04-PLAN.md — Live or shadow-mode scan and ranked opportunity monitor
+- [x] 06-04-PLAN.md — Live or shadow-mode scan and ranked opportunity monitor
 
 ### Phase 7: Alerts and Operational Hardening
 
@@ -215,5 +215,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Modeling, Calibration, and Artifact Registry | 4/4 | Complete   | 2026-06-19 |
 | 4. Backtesting and EV Decision Core | 3/3 | Complete | 2026-06-20 |
 | 5. Kalshi Read-Only Market Integration | 3/3 | Complete | 2026-06-20 |
-| 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | Not started | - |
+| 6. Market Mapping, Executable Pricing, and Live EV Monitor | 4/4 | Complete | 2026-06-21 |
 | 7. Alerts and Operational Hardening | 0/4 | Not started | - |

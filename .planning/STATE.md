@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 06 context gathered
-last_updated: "2026-06-21T00:00:04.056Z"
-last_activity: 2026-06-20 -- Phase 05 marked complete
+stopped_at: Phase 06 execution complete, ready to plan Phase 07
+last_updated: "2026-06-24T00:00:00.000Z"
+last_activity: 2026-06-21 -- Phase 06 read-only live monitor delivered
 progress:
   total_phases: 7
-  completed_phases: 5
-  total_plans: 19
-  completed_plans: 19
-  percent: 71
+  completed_phases: 6
+  total_plans: 27
+  completed_plans: 23
+  percent: 85
 ---
 
 # Project State
@@ -22,24 +22,24 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 **Core value:** Produce trustworthy, leakage-free ATP match win probabilities and convert them into actionable Kalshi-only positive expected value signals.
 **Current milestone:** v1.0 MVP
-**Current focus:** Phase 05 — kalshi-read-only-market-integration
+**Current focus:** Phase 07 — alerts-and-operational-hardening
 
 ## Current Position
 
-Phase: 05 — COMPLETE
-Plan: 3 of 3
-Status: Ready to execute
-Last activity: 2026-06-20 -- Phase 05 marked complete
+Phase: 06 — COMPLETE
+Plan: 4 of 4
+Status: Ready to plan Phase 07
+Last activity: 2026-06-21 -- Phase 06 read-only live monitor delivered
 
-Progress: [███████░░░] 71%
+Progress: [████████░░] 85%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 13
-- Average duration: 2 min
-- Total execution time: 0.1 hours
+- Total plans completed: 23
+- Average duration: 5 min
+- Total execution time: 1.5 hours
 
 **By Phase:**
 
@@ -50,19 +50,19 @@ Progress: [███████░░░] 71%
 | 3. Modeling, Calibration, and Artifact Registry | 4/4 | 0.4h | 6 min |
 | 4. Backtesting and EV Decision Core | 3/3 | 0.3h | 6 min |
 | 5. Kalshi Read-Only Market Integration | 3/3 | 0.4h | 8 min |
-| 6. Market Mapping, Executable Pricing, and Live EV Monitor | 0/4 | 0.0h | N/A |
+| 6. Market Mapping, Executable Pricing, and Live EV Monitor | 4/4 | 0.8h | 12 min |
 | 7. Alerts and Operational Hardening | 0/4 | 0.0h | N/A |
 **Recent Trend:**
 
-- Last 5 plans: 03-03, 03-04, 04-01, 04-02, 04-03
-- Trend: Phase 04 now includes trusted replay, side-symmetric EV decisions, and guarded backtest reporting
+- Last 5 plans: 05-02, 05-03, 06-01, 06-02, 06-03, 06-04
+- Trend: Phase 06 now includes deterministic mapping, executable pricing, and a read-only shadow/live EV monitor
 
-| Phase 03 P02 | 5min | 3 tasks | 6 files |
-| Phase 03 P03 | 9min | 2 tasks | 7 files |
-| Phase 03 P04 | 6min | 2 tasks | 8 files |
-| Phase 04 P01 | 4min | 2 tasks | 4 files |
-| Phase 04 P02 | 4min | 2 tasks | 4 files |
-| Phase 04 P03 | 4min | 2 tasks | 5 files |
+| Phase 05 P02 | 9min | 2 tasks | 4 files |
+| Phase 05 P03 | 15min | 2 tasks | 3 files |
+| Phase 06 P01 | 23min | 2 tasks | 7 files |
+| Phase 06 P02 | 18min | 2 tasks | 4 files |
+| Phase 06 P03 | 7min | 2 tasks | 6 files |
+| Phase 06 P04 | 20min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -97,6 +97,8 @@ Recent decisions affecting current work:
 - [Phase 03]: Filesystem-first bundle manifests remain canonical, while report artifacts live under reports/modeling/<run_id> and are referenced from the manifest.
 - [Phase 03]: XGBoost bundles persist raw_model.ubj plus a preprocessor sidecar so loads can reconstruct the trained pipeline without violating the required raw-model file contract.
 - [Phase 03]: Split manifests now carry shared source provenance so artifact manifests can record the exact pinned Jeff Sackmann commit SHA without reopening datasets.
+- [Phase 06]: Reuse the Phase 03 artifact bundle through a canonical-id replay helper rather than creating a second live-serving prediction seam.
+- [Phase 06]: Persist mapping_state and mapping_confidence on both accepted and rejected monitor outputs so later alerting consumes one auditable contract.
 
 ### Pending Todos
 
@@ -104,7 +106,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 6]: Validate Kalshi ATP naming, settlement wording, side orientation, and executable pricing assumptions against actual payloads.
+- [Phase 7]: Decide whether alerting should remain terminal/file-first or add a first external notification channel in v1.
 
 ## Deferred Items
 
@@ -116,6 +118,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-20T22:29:14.469Z
-Stopped at: Phase 06 context gathered
-Resume file: .planning/phases/06-market-mapping-executable-pricing-and-live-ev-monitor/06-CONTEXT.md
+Last session: 2026-06-24T00:00:00.000Z
+Stopped at: Phase 06 execution complete, preparing commit before Phase 07 planning
+Resume file: .planning/ROADMAP.md
