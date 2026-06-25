@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Sequence
 from typing import Literal
 
@@ -15,6 +16,9 @@ from tennisprediction.backtesting.schemas import (
     ReplayPredictionRow,
 )
 from tennisprediction.ev.pricing import SideEvaluation, evaluate_candidate_side
+from tennisprediction.logging import bind_audit_context
+
+_LOGGER = logging.getLogger("tennisprediction.ev.opportunity")
 
 
 def evaluate_opportunities(
@@ -25,6 +29,11 @@ def evaluate_opportunities(
     run_id: str,
     provenance_label: BacktestProvenanceLabel = BacktestProvenanceLabel.synthetic_proxy,
 ) -> OpportunityDecisionBatch:
+    logger = bind_audit_context(
+        _LOGGER,
+        run_id=run_id,
+        artifact_run_id=replay_rows[0].artifact_run_id if replay_rows else run_id,
+    )
     market_lookup = {
         market_input.canonical_match_id: market_input
         for market_input in market_inputs
@@ -46,7 +55,7 @@ def evaluate_opportunities(
             [record for record in batch_records if not record.accepted]
         )
 
-    return OpportunityDecisionBatch(
+    batch = OpportunityDecisionBatch(
         run_id=run_id,
         artifact_run_id=replay_rows[0].artifact_run_id if replay_rows else run_id,
         feature_version=replay_rows[0].feature_version if replay_rows else "",
@@ -58,6 +67,16 @@ def evaluate_opportunities(
         accepted_records=accepted_records,
         rejected_records=rejected_records,
     )
+    logger.info(
+        "Evaluated opportunity decisions",
+        extra={
+            "stage": "evaluation",
+            "decision_state": "accepted" if accepted_records else "rejected",
+            "accepted_count": len(accepted_records),
+            "rejected_count": len(rejected_records),
+        },
+    )
+    return batch
 
 
 def _evaluate_single_row(

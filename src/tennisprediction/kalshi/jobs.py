@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import time
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
@@ -25,10 +26,12 @@ from tennisprediction.kalshi.snapshots import (
     build_request_log_row,
 )
 from tennisprediction.kalshi.storage import persist_kalshi_snapshot_batch
+from tennisprediction.logging import bind_audit_context
 
 __all__ = ["collect_kalshi_snapshots"]
 
 _READ_ONLY_MARKET_STATUSES = {"unopened", "open", "paused", "closed", "settled"}
+_LOGGER = logging.getLogger("tennisprediction.kalshi.jobs")
 
 
 @dataclass(frozen=True)
@@ -48,6 +51,7 @@ def collect_kalshi_snapshots(
     max_backoff_seconds: float = 2.0,
     sleep_fn: Callable[[float], None] = time.sleep,
 ) -> Path:
+    logger = bind_audit_context(_LOGGER)
     if page_limit < 1:
         raise ValueError("page_limit must be at least 1")
 
@@ -144,7 +148,20 @@ def collect_kalshi_snapshots(
         market_detail_snapshots=tuple(market_detail_snapshots),
         orderbook_snapshots=tuple(orderbook_snapshots),
     )
-    return persist_kalshi_snapshot_batch(batch, database_path=database_path)
+    output_path = persist_kalshi_snapshot_batch(batch, database_path=database_path)
+    logger.info(
+        "Collected Kalshi snapshot batch",
+        extra={
+            "stage": "collection",
+            "decision_state": "snapshot_collected",
+            "request_count": len(request_logs),
+            "market_count": len(market_snapshots),
+            "detail_count": len(market_detail_snapshots),
+            "orderbook_count": len(orderbook_snapshots),
+            "output_path": str(output_path),
+        },
+    )
+    return output_path
 
 
 def _market_collection_action(status: str | None) -> _MarketCollectionAction:

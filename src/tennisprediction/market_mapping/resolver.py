@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import asdict, dataclass
 from datetime import datetime
@@ -10,6 +11,7 @@ from typing import Any
 import duckdb
 
 from tennisprediction.config import Settings, get_settings
+from tennisprediction.logging import bind_audit_context
 from tennisprediction.market_mapping.aliases import (
     PLAYER_ALIAS_OVERRIDES_PATH,
     load_player_alias_overrides,
@@ -39,6 +41,7 @@ _REQUIRED_MARKET_COLUMNS = (
     "collected_at_utc",
 )
 _EVIDENCE_TABLE = "market_mapping_evidence"
+_LOGGER = logging.getLogger("tennisprediction.market_mapping.resolver")
 
 
 @dataclass(frozen=True)
@@ -60,6 +63,7 @@ def resolve_kalshi_market_mappings(
     database_path: str | Path | None = None,
     alias_overrides_path: str | Path = PLAYER_ALIAS_OVERRIDES_PATH,
 ) -> list[MarketMappingEvidenceRow]:
+    logger = bind_audit_context(_LOGGER)
     database_file = _resolve_database_path(database_path)
     try:
         overrides = load_player_alias_overrides(alias_overrides_path)
@@ -74,7 +78,7 @@ def resolve_kalshi_market_mappings(
     finally:
         connection.close()
 
-    return [
+    rows = [
         _resolve_single_market(
             market_row=market_row,
             canonical_players=canonical_players,
@@ -83,6 +87,21 @@ def resolve_kalshi_market_mappings(
         )
         for market_row in latest_markets
     ]
+    state_counts: dict[str, int] = {}
+    for row in rows:
+        state_counts[row.mapping_state.value] = state_counts.get(row.mapping_state.value, 0) + 1
+    logger.info(
+        "Resolved Kalshi market mappings",
+        extra={
+            "stage": "mapping",
+            "decision_state": "mapping_resolved",
+            "matched_count": state_counts.get(MarketMappingState.matched.value, 0),
+            "ambiguous_count": state_counts.get(MarketMappingState.ambiguous.value, 0),
+            "unmatched_count": state_counts.get(MarketMappingState.unmatched.value, 0),
+            "excluded_count": state_counts.get(MarketMappingState.excluded.value, 0),
+        },
+    )
+    return rows
 
 
 def persist_market_mapping_evidence(
@@ -130,6 +149,12 @@ def persist_market_mapping_evidence(
 def require_matched_mapping(
     row: MarketMappingEvidenceRow,
 ) -> UnscorableMappingRecord | None:
+    logger = bind_audit_context(
+        _LOGGER,
+        market_ticker=row.market_ticker,
+        mapping_state=row.mapping_state.value,
+        mapping_confidence=row.mapping_confidence.value,
+    )
     if (
         row.mapping_state == MarketMappingState.matched
         and row.mapping_confidence != MappingConfidenceTier.manual_review_required
@@ -145,7 +170,7 @@ def require_matched_mapping(
     elif not rejection_reason_codes:
         rejection_reason_codes = (f"mapping_state_{row.mapping_state.value}",)
 
-    return UnscorableMappingRecord(
+    rejection = UnscorableMappingRecord(
         market_ticker=row.market_ticker,
         event_ticker=row.event_ticker,
         mapping_state=row.mapping_state,
@@ -153,6 +178,19 @@ def require_matched_mapping(
         canonical_match_id=row.canonical_match_id,
         rejection_reason_codes=rejection_reason_codes,
     )
+    logger.info(
+        "Rejected unscorable market mapping",
+        extra={
+            "stage": "mapping",
+            "decision_state": "rejected",
+            "rejection_reason": (
+                rejection.rejection_reason_codes[0]
+                if rejection.rejection_reason_codes
+                else "-"
+            ),
+        },
+    )
+    return rejection
 
 
 def _resolve_single_market(

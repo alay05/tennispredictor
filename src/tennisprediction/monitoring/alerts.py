@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from rich.console import Console
 from rich.table import Table
 
+from tennisprediction.logging import bind_audit_context
+
 STALE_QUOTE_SECONDS = 30 * 60
 THIN_LIQUIDITY_DOLLARS = 10.0
+_LOGGER = logging.getLogger("tennisprediction.monitoring.alerts")
 
 
 def build_operator_report_rows(
@@ -72,6 +76,7 @@ def render_operator_report(
     rejected_rows: list[dict[str, object]],
     console: Console,
 ) -> None:
+    logger = bind_audit_context(_LOGGER)
     summary = build_operator_report_summary(
         accepted_rows=accepted_rows,
         rejected_rows=rejected_rows,
@@ -97,6 +102,17 @@ def render_operator_report(
         console.print("Health warnings")
         for warning in summary["health_warnings"]:
             console.print(f"- {warning}")
+
+    logger.info(
+        "Rendered operator advisory report",
+        extra={
+            "stage": "report",
+            "decision_state": "operator_report",
+            "accepted_count": summary["accepted_count"],
+            "rejected_count": summary["rejected_count"],
+            "health_warning_count": len(summary["health_warnings"]),
+        },
+    )
 
     table = Table(title="Accepted Opportunities")
     table.add_column("Match")

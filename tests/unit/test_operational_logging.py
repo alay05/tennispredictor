@@ -64,8 +64,12 @@ def test_configure_logging_emits_stable_context_to_console_and_repo_local_file(
     )
     _flush_handlers(logger)
 
-    file_handlers = [handler for handler in logger.handlers if isinstance(handler, logging.FileHandler)]
-    stream_handlers = [handler for handler in logger.handlers if isinstance(handler, logging.StreamHandler)]
+    file_handlers = [
+        handler for handler in logger.handlers if isinstance(handler, logging.FileHandler)
+    ]
+    stream_handlers = [
+        handler for handler in logger.handlers if isinstance(handler, logging.StreamHandler)
+    ]
 
     assert file_handlers, "configure_logging() should fan out to a repo-local file handler"
     assert stream_handlers, "configure_logging() should retain console output"
@@ -118,10 +122,22 @@ def test_operations_wrappers_emit_start_and_finish_audit_events(
     )
 
     monkeypatch.setattr(operations, "materialize_modeling_dataset", lambda **_: {"rows": 2})
-    monkeypatch.setattr(operations, "freeze_chronological_splits", lambda *args, **kwargs: {"split": "001"})
+    monkeypatch.setattr(
+        operations,
+        "freeze_chronological_splits",
+        lambda *args, **kwargs: {"split": "001"},
+    )
     monkeypatch.setattr(operations, "_fit_model", lambda **_: {"fit": "ok"})
-    monkeypatch.setattr(operations, "calibrate_model_probabilities", lambda *args, **kwargs: _fake_calibration_result())
-    monkeypatch.setattr(operations, "evaluate_probability_predictions", lambda *args, **kwargs: _FakeMetrics())
+    monkeypatch.setattr(
+        operations,
+        "calibrate_model_probabilities",
+        lambda *args, **kwargs: _fake_calibration_result(),
+    )
+    monkeypatch.setattr(
+        operations,
+        "evaluate_probability_predictions",
+        lambda *args, **kwargs: _FakeMetrics(),
+    )
     monkeypatch.setattr(
         operations,
         "write_model_artifact_bundle",
@@ -133,8 +149,16 @@ def test_operations_wrappers_emit_start_and_finish_audit_events(
         "load_model_artifact_bundle",
         lambda *args, **kwargs: _FakeBundleManifestContainer(run_id="artifact-001"),
     )
-    monkeypatch.setattr(operations, "replay_model_predictions", lambda *args, **kwargs: _fake_replay_result())
-    monkeypatch.setattr(operations, "summarize_backtest", lambda batch: {"accepted": len(batch.accepted_records)})
+    monkeypatch.setattr(
+        operations,
+        "replay_model_predictions",
+        lambda *args, **kwargs: _fake_replay_result(),
+    )
+    monkeypatch.setattr(
+        operations,
+        "summarize_backtest",
+        lambda batch: {"accepted": len(batch.accepted_records)},
+    )
     monkeypatch.setattr(operations, "estimate_backtest_uncertainty", lambda batch: {"bands": []})
     monkeypatch.setattr(
         operations,
@@ -174,7 +198,11 @@ def test_operations_wrappers_emit_start_and_finish_audit_events(
     monkeypatch.setattr(
         operations,
         "write_live_monitor_reports",
-        lambda *, run_id, accepted_rows, rejected_rows, settings: settings.reports_dir / "monitoring" / run_id,
+        (
+            lambda *, run_id, accepted_rows, rejected_rows, settings: (
+                settings.reports_dir / "monitoring" / run_id
+            )
+        ),
     )
     monkeypatch.setattr(operations, "render_live_monitor_console", lambda **kwargs: None)
     monkeypatch.setattr(
@@ -223,6 +251,10 @@ def test_operations_wrappers_emit_start_and_finish_audit_events(
         run_id="scan-001",
         settings=settings,
     )
+    report_dir = settings.reports_dir / "monitoring" / "scan-001"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    (report_dir / "accepted_opportunities.parquet").write_text("fixture", encoding="utf-8")
+    (report_dir / "rejected_opportunities.parquet").write_text("fixture", encoding="utf-8")
     operations.report_monitoring_run(
         run_id="scan-001",
         settings=settings,
@@ -302,9 +334,18 @@ def test_monitoring_decision_seams_emit_reason_coded_audit_summaries(
         console=console,
     )
 
-    assert any(getattr(record, "mapping_state", None) == "ambiguous" for record in collector.records)
-    assert any(getattr(record, "decision_state", None) == "accepted" for record in collector.records)
-    assert any(getattr(record, "rejection_reason", None) == "multiple_candidate_matches" for record in collector.records)
+    assert any(
+        getattr(record, "mapping_state", None) == "ambiguous"
+        for record in collector.records
+    )
+    assert any(
+        getattr(record, "decision_state", None) == "accepted"
+        for record in collector.records
+    )
+    assert any(
+        getattr(record, "rejection_reason", None) == "multiple_candidate_matches"
+        for record in collector.records
+    )
 
 
 def test_logging_redacts_kalshi_sensitive_values_from_records_and_file(

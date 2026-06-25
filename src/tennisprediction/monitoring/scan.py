@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -17,11 +18,14 @@ from tennisprediction.kalshi.client import KalshiReadClient
 from tennisprediction.kalshi.executable import derive_executable_market_input
 from tennisprediction.kalshi.jobs import collect_kalshi_snapshots
 from tennisprediction.kalshi.snapshots import KalshiOrderbookSnapshotRow
+from tennisprediction.logging import bind_audit_context
 from tennisprediction.market_mapping import (
     MarketMappingEvidenceRow,
     resolve_kalshi_market_mappings,
 )
 from tennisprediction.market_mapping.resolver import require_matched_mapping
+
+_LOGGER = logging.getLogger("tennisprediction.monitoring.scan")
 
 
 @dataclass(frozen=True)
@@ -47,6 +51,12 @@ def run_kalshi_ev_scan(
     page_limit: int = 100,
     evaluated_at_utc: datetime | None = None,
 ) -> ScanRunResult:
+    logger = bind_audit_context(
+        _LOGGER,
+        run_id=run_id,
+        command="scan-kalshi-ev",
+        artifact_run_id=run_id,
+    )
     snapshot_database_path = _resolve_snapshot_database_path(
         database_path=database_path,
         collect_fresh=collect_fresh,
@@ -129,6 +139,18 @@ def run_kalshi_ev_scan(
     # Keep the matched count materialized via accepted/rejected rows, not only a transient variable.
     _ = matched_count
 
+    logger.info(
+        "Completed Kalshi EV scan",
+        extra={
+            "stage": "scan",
+            "decision_state": "scan_completed",
+            "mapping_state": "matched" if matched_count else "unmatched",
+            "accepted_count": len(accepted_records),
+            "rejected_count": len(rejected_records),
+            "matched_count": matched_count,
+            "snapshot_database_path": str(snapshot_database_path),
+        },
+    )
     return ScanRunResult(
         run_id=run_id,
         snapshot_database_path=snapshot_database_path,
