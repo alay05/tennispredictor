@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,7 @@ from tennisprediction.cli import app
 
 runner = CliRunner()
 VALID_SOURCE_COMMIT_SHA = "0123456789abcdef0123456789abcdef01234567"
+ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
 
 def test_cli_help_exposes_one_shot_commands_and_omits_watch_mode_flags() -> None:
@@ -50,7 +52,8 @@ def test_cli_rejects_watch_mode_flags() -> None:
     )
 
     assert result.exit_code != 0
-    assert "No such option: --watch" in result.output
+    normalized_output = ANSI_ESCAPE_RE.sub("", result.output)
+    assert "No such option: --watch" in normalized_output
 
 
 @pytest.mark.parametrize(
