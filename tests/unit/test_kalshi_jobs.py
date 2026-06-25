@@ -185,8 +185,15 @@ def test_collect_kalshi_snapshots_handles_market_states_explicitly_and_stays_rea
         typer.main.get_command(cli_module.app).commands,
     )
     assert public_command_names == [
+        "build-features",
         "collect-kalshi-snapshots",
+        "evaluate-artifact",
         "health",
+        "ingest-snapshot",
+        "review-monitoring-report",
+        "run-backtest",
+        "scan-kalshi-ev",
+        "train-artifact-bundle",
         "version",
     ]
     assert not any(
