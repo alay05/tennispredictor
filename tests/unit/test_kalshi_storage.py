@@ -145,9 +145,7 @@ def test_persist_and_load_kalshi_snapshot_batch_round_trips_metadata_timestamps_
     assert loaded.request_logs[0].response_checksum == expected_checksum
     assert loaded.market_snapshots[0].ticker == "ATP-OPEN-001"
     assert loaded.market_snapshots[0].response_index == 0
-    assert loaded.market_detail_snapshots[0].open_time == datetime(
-        2024, 1, 1, 13, 0
-    )
+    assert loaded.market_detail_snapshots[0].open_time == datetime(2024, 1, 1, 13, 0)
     assert loaded.orderbook_snapshots[0].yes_best_price_dollars == Decimal("0.1500")
     assert loaded.orderbook_snapshots[0].no_best_quantity_fp == Decimal("75.00")
 
@@ -169,10 +167,7 @@ def test_kalshi_snapshot_tables_have_stable_schema_and_table_names(
 
     connection = duckdb.connect(str(database_path))
     try:
-        tables = {
-            row[0]
-            for row in connection.execute("show tables").fetchall()
-        }
+        tables = {row[0] for row in connection.execute("show tables").fetchall()}
         assert tables == {
             "kalshi_request_logs",
             "kalshi_market_snapshots",
@@ -184,9 +179,7 @@ def test_kalshi_snapshot_tables_have_stable_schema_and_table_names(
         assert _columns(connection, "kalshi_market_detail_snapshots") == (
             MARKET_DETAIL_SNAPSHOT_COLUMNS
         )
-        assert _columns(connection, "kalshi_orderbook_snapshots") == (
-            ORDERBOOK_SNAPSHOT_COLUMNS
-        )
+        assert _columns(connection, "kalshi_orderbook_snapshots") == (ORDERBOOK_SNAPSHOT_COLUMNS)
     finally:
         connection.close()
 
@@ -308,6 +301,9 @@ def _market_payload() -> dict[str, object]:
 
 
 def _columns(connection: duckdb.DuckDBPyConnection, table_name: str) -> tuple[str, ...]:
-    return tuple(row[1] for row in connection.execute(
-        f"pragma table_info('{table_name}')",
-    ).fetchall())
+    return tuple(
+        row[1]
+        for row in connection.execute(
+            f"pragma table_info('{table_name}')",
+        ).fetchall()
+    )

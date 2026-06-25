@@ -82,10 +82,7 @@ def _ddl_for_rows(
 def _snapshot_lookup(
     player_snapshots: list[PlayerFeatureSnapshot],
 ) -> dict[tuple[str, str], PlayerFeatureSnapshot]:
-    return {
-        (snapshot.canonical_match_id, snapshot.side): snapshot
-        for snapshot in player_snapshots
-    }
+    return {(snapshot.canonical_match_id, snapshot.side): snapshot for snapshot in player_snapshots}
 
 
 def _audit_snapshot_lookup(

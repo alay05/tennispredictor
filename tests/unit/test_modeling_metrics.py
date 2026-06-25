@@ -330,9 +330,7 @@ def _prediction_row(
     favored_probability: float | None = None,
 ) -> CalibratedPredictionRow:
     raw_probability = (
-        calibrated_probability
-        if favored_side == "A"
-        else 1.0 - calibrated_probability
+        calibrated_probability if favored_side == "A" else 1.0 - calibrated_probability
     )
     resolved_favored_probability = (
         favored_probability

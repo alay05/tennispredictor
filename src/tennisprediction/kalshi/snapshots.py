@@ -291,13 +291,9 @@ def build_orderbook_snapshot_row(
         no_levels_json=_canonical_json([asdict(level) for level in no_levels]),
         yes_level_count=len(yes_levels),
         no_level_count=len(no_levels),
-        yes_best_price_dollars=(
-            yes_levels[0].price_dollars if yes_levels else None
-        ),
+        yes_best_price_dollars=(yes_levels[0].price_dollars if yes_levels else None),
         yes_best_quantity_fp=(yes_levels[0].quantity_fp if yes_levels else None),
-        no_best_price_dollars=(
-            no_levels[0].price_dollars if no_levels else None
-        ),
+        no_best_price_dollars=(no_levels[0].price_dollars if no_levels else None),
         no_best_quantity_fp=(no_levels[0].quantity_fp if no_levels else None),
     )
 

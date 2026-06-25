@@ -10,8 +10,8 @@ from tennisprediction.features.schemas import (
 )
 from tennisprediction.features.state import (
     HeadToHeadState,
-    MatchStatSourceKey,
     MatchStatAggregateState,
+    MatchStatSourceKey,
     PlayerFeatureState,
     apply_match_result_batch,
     build_match_stat_source_key,

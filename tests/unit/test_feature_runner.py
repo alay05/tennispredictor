@@ -115,8 +115,7 @@ def test_build_feature_snapshots_emits_pre_match_rank_and_context_before_cohort_
     assert second_row.rank_points_diff == 550
 
 
-def test_build_feature_snapshots_emits_recent_form_and_rest_differentials_from_player_snapshots(
-) -> None:
+def test_build_feature_snapshots_emits_form_and_rest_differentials() -> None:
     result = build_feature_snapshots(
         matches=[
             _match(

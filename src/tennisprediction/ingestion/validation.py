@@ -46,9 +46,7 @@ def _validate_row_types(row: dict[str, str], schema: RawSchema, file_name: str) 
         validate_date_value(row[column], file_name=file_name, column=column)
 
 
-def _build_file_quarantine_record(
-    entry: SourceFileEntry, *, reason: str
-) -> FileQuarantineRecord:
+def _build_file_quarantine_record(entry: SourceFileEntry, *, reason: str) -> FileQuarantineRecord:
     return FileQuarantineRecord(
         relative_path=entry.relative_path.as_posix(),
         reason=reason,

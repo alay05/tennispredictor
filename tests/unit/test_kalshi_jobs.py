@@ -77,16 +77,12 @@ def test_collect_kalshi_snapshots_paginates_until_cursor_exhaustion(
             _market_page(
                 request_index=1,
                 cursor="cursor-2",
-                markets=(
-                    _market("ATP-CLOSED-001", "closed"),
-                ),
+                markets=(_market("ATP-CLOSED-001", "closed"),),
             ),
             _market_page(
                 request_index=2,
                 cursor=None,
-                markets=(
-                    _market("ATP-SETTLED-001", "settled"),
-                ),
+                markets=(_market("ATP-SETTLED-001", "settled"),),
             ),
         ],
     )
@@ -199,9 +195,7 @@ def test_collect_kalshi_snapshots_handles_market_states_explicitly_and_stays_rea
     )
 
     public_symbols = [
-        name
-        for name, value in inspect.getmembers(jobs_module)
-        if not name.startswith("_")
+        name for name, value in inspect.getmembers(jobs_module) if not name.startswith("_")
     ]
     assert not any(
         forbidden in " ".join(public_symbols)

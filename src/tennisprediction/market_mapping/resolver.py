@@ -184,9 +184,7 @@ def require_matched_mapping(
             "stage": "mapping",
             "decision_state": "rejected",
             "rejection_reason": (
-                rejection.rejection_reason_codes[0]
-                if rejection.rejection_reason_codes
-                else "-"
+                rejection.rejection_reason_codes[0] if rejection.rejection_reason_codes else "-"
             ),
         },
     )
@@ -304,9 +302,7 @@ def _resolve_single_market(
             normalized_yes=normalized_yes,
             normalized_no=normalized_no,
             alias_hit_player_ids=alias_hit_player_ids,
-            candidate_match_ids=tuple(
-                match.canonical_match_id for match in same_day_matches
-            ),
+            candidate_match_ids=tuple(match.canonical_match_id for match in same_day_matches),
             mapping_state=MarketMappingState.ambiguous,
             mapping_confidence=pair_confidence,
             canonical_match_id=None,
@@ -440,10 +436,7 @@ def _load_latest_market_rows(
         order by ticker
         """
     ).fetchall()
-    return [
-        dict(zip(_REQUIRED_MARKET_COLUMNS, record, strict=True))
-        for record in records
-    ]
+    return [dict(zip(_REQUIRED_MARKET_COLUMNS, record, strict=True)) for record in records]
 
 
 def _load_canonical_players(
@@ -574,15 +567,9 @@ def _pair_resolution_reasons(
 def _resolution_confidence(
     *resolutions: PlayerNameResolutionResult,
 ) -> MappingConfidenceTier:
-    if any(
-        resolution.resolution_source == "unresolved"
-        for resolution in resolutions
-    ):
+    if any(resolution.resolution_source == "unresolved" for resolution in resolutions):
         return MappingConfidenceTier.manual_review_required
-    if any(
-        resolution.resolution_source == "alias_override"
-        for resolution in resolutions
-    ):
+    if any(resolution.resolution_source == "alias_override" for resolution in resolutions):
         return MappingConfidenceTier.alias_override
     return MappingConfidenceTier.exact_names
 

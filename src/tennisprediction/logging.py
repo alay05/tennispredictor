@@ -83,12 +83,13 @@ class _AuditLoggerAdapter(logging.LoggerAdapter[logging.Logger]):
         kwargs: Mapping[str, object],
     ) -> tuple[object, dict[str, object]]:
         extras = dict(_current_audit_context())
-        extras.update(self.extra)
+        if self.extra:
+            extras.update(dict(self.extra))
 
         processed_kwargs = dict(kwargs)
         record_extra = processed_kwargs.get("extra")
         if isinstance(record_extra, Mapping):
-            extras.update(record_extra)
+            extras.update(dict(record_extra))
         processed_kwargs["extra"] = extras
         return msg, processed_kwargs
 

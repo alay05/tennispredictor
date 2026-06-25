@@ -15,8 +15,9 @@ from tennisprediction.market_mapping.schemas import (
 )
 
 
-def test_derive_executable_market_input_uses_reciprocal_bid_ladders_and_top_of_book_notional(
-) -> None:
+def test_derive_executable_market_input_uses_reciprocal_bid_ladders_and_top_of_book_notional() -> (
+    None
+):
     collected_at = datetime(2024, 6, 20, 14, 0, 0)
     evaluated_at = datetime(2024, 6, 20, 14, 0, 45)
     market_input = derive_executable_market_input(
@@ -37,10 +38,7 @@ def test_derive_executable_market_input_uses_reciprocal_bid_ladders_and_top_of_b
     assert market_input.yes_side.entry_price == pytest.approx(0.59)
     assert market_input.yes_side.entry_price_source == "reciprocal_no_bid_top_of_book"
     assert market_input.yes_side.available_liquidity_dollars == pytest.approx(4.13)
-    assert (
-        market_input.yes_side.liquidity_source
-        == "top_of_book_notional_from_no_bid_quantity"
-    )
+    assert market_input.yes_side.liquidity_source == "top_of_book_notional_from_no_bid_quantity"
     assert market_input.yes_side.freshness_age_seconds == pytest.approx(45.0)
     assert market_input.yes_side.freshness_source == "orderbook_collected_at_utc"
     assert market_input.yes_side.rejection_reason_codes == ()
@@ -48,10 +46,7 @@ def test_derive_executable_market_input_uses_reciprocal_bid_ladders_and_top_of_b
     assert market_input.no_side.entry_price == pytest.approx(0.63)
     assert market_input.no_side.entry_price_source == "reciprocal_yes_bid_top_of_book"
     assert market_input.no_side.available_liquidity_dollars == pytest.approx(1.89)
-    assert (
-        market_input.no_side.liquidity_source
-        == "top_of_book_notional_from_yes_bid_quantity"
-    )
+    assert market_input.no_side.liquidity_source == "top_of_book_notional_from_yes_bid_quantity"
     assert market_input.no_side.freshness_age_seconds == pytest.approx(45.0)
     assert market_input.no_side.freshness_source == "orderbook_collected_at_utc"
     assert market_input.no_side.rejection_reason_codes == ()

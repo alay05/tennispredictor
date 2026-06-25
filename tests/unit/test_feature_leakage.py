@@ -313,9 +313,7 @@ def _snapshot_by_key(result: object, *, match_id: str, player_id: int, side: str
 
 
 def _differential_by_match(result: object, *, match_id: str):
-    return next(
-        row for row in result.differential_rows if row.canonical_match_id == match_id
-    )
+    return next(row for row in result.differential_rows if row.canonical_match_id == match_id)
 
 
 def test_build_feature_snapshots_is_invariant_to_future_row_deletion() -> None:
@@ -346,9 +344,7 @@ def test_build_feature_snapshots_is_invariant_to_future_row_deletion() -> None:
     )
     assert _differential_contract(
         _differential_by_match(full_result, match_id=target_match_id)
-    ) == _differential_contract(
-        _differential_by_match(truncated_result, match_id=target_match_id)
-    )
+    ) == _differential_contract(_differential_by_match(truncated_result, match_id=target_match_id))
 
 
 def test_build_feature_snapshots_is_invariant_to_same_cohort_reordering() -> None:
@@ -384,9 +380,7 @@ def test_build_feature_snapshots_is_invariant_to_same_cohort_reordering() -> Non
     )
     assert _differential_contract(
         _differential_by_match(canonical_result, match_id=target_match_id)
-    ) == _differential_contract(
-        _differential_by_match(reordered_result, match_id=target_match_id)
-    )
+    ) == _differential_contract(_differential_by_match(reordered_result, match_id=target_match_id))
 
 
 def test_build_feature_snapshots_is_invariant_to_cross_file_row_number_collisions() -> None:

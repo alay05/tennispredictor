@@ -185,14 +185,12 @@ def test_run_kalshi_ev_scan_shadow_mode_scores_only_matched_markets_and_keeps_re
     assert result.accepted_records[0]["market_ticker"] == matched_row.market_ticker
     assert result.accepted_records[0]["mapping_state"] == MarketMappingState.matched.value
     assert (
-        result.accepted_records[0]["mapping_confidence"]
-        == MappingConfidenceTier.exact_names.value
+        result.accepted_records[0]["mapping_confidence"] == MappingConfidenceTier.exact_names.value
     )
     assert result.rejected_records[0]["market_ticker"] == unmatched_row.market_ticker
     assert result.rejected_records[0]["mapping_state"] == MarketMappingState.unmatched.value
     assert (
-        result.rejected_records[0]["mapping_confidence"]
-        == MappingConfidenceTier.exact_names.value
+        result.rejected_records[0]["mapping_confidence"] == MappingConfidenceTier.exact_names.value
     )
     assert "timing_window_miss" in result.rejected_records[0]["rejection_reason_codes"]
 

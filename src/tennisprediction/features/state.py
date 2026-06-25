@@ -338,9 +338,7 @@ def build_pre_match_stat_snapshot(*, state: MatchStatAggregateState) -> PreMatch
     ace_rate: float | None = None
 
     if not stats_missing and not stats_low_sample:
-        service_first_won_rate = (
-            state.service_first_won_total / state.serve_point_exposure
-        )
+        service_first_won_rate = state.service_first_won_total / state.serve_point_exposure
         return_first_won_allowed_rate = (
             state.return_first_won_allowed_total / state.return_serve_point_exposure
         )
@@ -459,9 +457,7 @@ def _build_post_match_stat_state(
             state.return_first_won_allowed_total + return_first_won_allowed
         ),
         serve_point_exposure=state.serve_point_exposure + serve_points,
-        return_serve_point_exposure=(
-            state.return_serve_point_exposure + return_serve_points
-        ),
+        return_serve_point_exposure=(state.return_serve_point_exposure + return_serve_points),
         ace_total=state.ace_total + (ace_count or 0),
         ace_data_complete=state.ace_data_complete and ace_count is not None,
     )

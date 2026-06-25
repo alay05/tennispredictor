@@ -88,10 +88,7 @@ def build_synthetic_modeling_fixture(tmp_path: Path) -> SyntheticModelingFixture
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
             """,
-            [
-                tuple(row[column] for column in row.keys())
-                for row in feature_rows
-            ],
+            [tuple(row[column] for column in row.keys()) for row in feature_rows],
         )
         connection.execute(
             """

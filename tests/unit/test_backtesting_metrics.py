@@ -37,9 +37,7 @@ def test_summarize_backtest_computes_chronological_equity_curve_and_drawdown() -
     assert [point.cumulative_profit for point in summary.equity_curve] == pytest.approx(
         [-0.2, 0.1, 0.5]
     )
-    assert [point.drawdown for point in summary.equity_curve] == pytest.approx(
-        [0.2, 0.0, 0.0]
-    )
+    assert [point.drawdown for point in summary.equity_curve] == pytest.approx([0.2, 0.0, 0.0])
     assert uncertainty.sample_size == 3
     assert uncertainty.net_profit_lower <= uncertainty.net_profit_upper
     assert uncertainty.roi_lower <= uncertainty.roi_upper

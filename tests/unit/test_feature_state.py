@@ -262,8 +262,9 @@ def test_build_feature_snapshots_uses_pre_match_elo_and_surface_elo() -> None:
     assert isinstance(result.state_audit_records[0], PlayerStateAuditRecord)
 
 
-def test_build_feature_snapshots_tracks_last_5_10_20_form_and_days_rest_from_prior_matches(
-) -> None:
+def test_build_feature_snapshots_tracks_last_5_10_20_form_and_days_rest_from_prior_matches() -> (
+    None
+):
     result = build_feature_snapshots(
         matches=[
             _match(
@@ -570,8 +571,9 @@ def test_build_feature_snapshots_uses_prior_match_stats_only() -> None:
     assert missing_ace_history_snapshot.stats_low_sample is False
 
 
-def test_build_feature_snapshots_keeps_prior_stats_bound_to_source_file_path_and_row_number(
-) -> None:
+def test_build_feature_snapshots_keeps_prior_stats_bound_to_source_file_path_and_row_number() -> (
+    None
+):
     matches, rankings, match_stats = _cross_file_row_number_collision_history()
 
     result = build_feature_snapshots(

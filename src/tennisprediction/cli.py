@@ -76,18 +76,18 @@ def train_artifact_bundle(
         str,
         typer.Option(help="Feature version to materialize into the training dataset."),
     ] = get_settings().default_feature_version,
-    train_end_date: Annotated[
-        str,
-        typer.Option(help="Inclusive train split end date in YYYYMMDD format."),
-    ] = ...,
-    validation_end_date: Annotated[
-        str,
-        typer.Option(help="Inclusive validation split end date in YYYYMMDD format."),
-    ] = ...,
-    test_end_date: Annotated[
-        str,
-        typer.Option(help="Inclusive test split end date in YYYYMMDD format."),
-    ] = ...,
+    train_end_date: str = typer.Option(
+        ...,
+        help="Inclusive train split end date in YYYYMMDD format.",
+    ),
+    validation_end_date: str = typer.Option(
+        ...,
+        help="Inclusive validation split end date in YYYYMMDD format.",
+    ),
+    test_end_date: str = typer.Option(
+        ...,
+        help="Inclusive test split end date in YYYYMMDD format.",
+    ),
     database_path: Annotated[
         Path | None,
         typer.Option(help="Optional DuckDB path containing canonical and feature tables."),

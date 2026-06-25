@@ -94,7 +94,9 @@ def _match_stat(
     )
 
 
-def _synthetic_history(*, include_cross_file_collision: bool = False) -> tuple[
+def _synthetic_history(
+    *, include_cross_file_collision: bool = False
+) -> tuple[
     list[CanonicalMatch],
     list[CanonicalRanking],
     list[CanonicalMatchStat],
@@ -225,10 +227,7 @@ def test_persist_feature_build_writes_snapshot_row_and_audit_tables(tmp_path: Pa
 
     connection = duckdb.connect(str(persisted_path))
     try:
-        tables = {
-            row[0]
-            for row in connection.execute("show tables").fetchall()
-        }
+        tables = {row[0] for row in connection.execute("show tables").fetchall()}
         assert tables == {
             "feature_differential_rows",
             "feature_player_snapshots",

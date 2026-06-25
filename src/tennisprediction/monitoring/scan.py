@@ -71,9 +71,7 @@ def run_kalshi_ev_scan(
     orderbook_rows = load_latest_orderbook_snapshots(
         database_path=snapshot_database_path,
         tickers=tuple(
-            row.market_ticker
-            for row in mapping_rows
-            if require_matched_mapping(row) is None
+            row.market_ticker for row in mapping_rows if require_matched_mapping(row) is None
         ),
     )
     replay_rows = predict_matches_for_canonical_ids(

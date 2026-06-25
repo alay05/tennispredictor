@@ -125,9 +125,7 @@ class KalshiReadClient:
             )
 
         markets = tuple(
-            _normalize_market(record)
-            for record in markets_payload
-            if isinstance(record, Mapping)
+            _normalize_market(record) for record in markets_payload if isinstance(record, Mapping)
         )
         cursor_value = payload.get("cursor")
         if cursor_value is not None and not isinstance(cursor_value, str):
@@ -194,11 +192,7 @@ class KalshiReadClient:
         timestamp_ms = self._timestamp_provider()
         signed_payload = f"{timestamp_ms}{method}{path}"
         signature = _sign_request_payload(self._private_key, signed_payload)
-        query_params = (
-            httpx.QueryParams(params)
-            if params is not None
-            else httpx.QueryParams()
-        )
+        query_params = httpx.QueryParams(params) if params is not None else httpx.QueryParams()
         headers = {
             KALSHI_ACCESS_KEY_HEADER: self._access_key,
             KALSHI_ACCESS_TIMESTAMP_HEADER: str(timestamp_ms),

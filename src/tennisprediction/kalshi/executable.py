@@ -36,9 +36,7 @@ def derive_executable_market_input(
 
     yes_levels = _load_levels(orderbook_row.yes_levels_json)
     no_levels = _load_levels(orderbook_row.no_levels_json)
-    freshness_age_seconds = (
-        evaluated_at_utc - orderbook_row.collected_at_utc
-    ).total_seconds()
+    freshness_age_seconds = (evaluated_at_utc - orderbook_row.collected_at_utc).total_seconds()
     stale = freshness_age_seconds > stale_after_seconds
 
     yes_side = _build_side_input(

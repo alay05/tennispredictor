@@ -75,11 +75,7 @@ def materialize_modeling_dataset(
 
 def _feature_columns(connection: duckdb.DuckDBPyConnection) -> list[str]:
     table_info = connection.execute("pragma table_info('feature_differential_rows')").fetchall()
-    return [
-        row[1]
-        for row in table_info
-        if row[1] not in _NON_FEATURE_COLUMNS
-    ]
+    return [row[1] for row in table_info if row[1] not in _NON_FEATURE_COLUMNS]
 
 
 def _build_modeling_row(
@@ -100,8 +96,7 @@ def _build_modeling_row(
         lineage_source_row_number=_value_as_int(raw_row, "lineage_source_row_number"),
         lineage_source_snapshot_root=_value_as_str(raw_row, "lineage_source_snapshot_root"),
         feature_values={
-            column_name: cast(FeatureValue, raw_row[column_name])
-            for column_name in feature_columns
+            column_name: cast(FeatureValue, raw_row[column_name]) for column_name in feature_columns
         },
     )
 

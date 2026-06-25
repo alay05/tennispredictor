@@ -261,14 +261,10 @@ def test_operations_wrappers_emit_start_and_finish_audit_events(
     )
 
     start_commands = {
-        record.command
-        for record in collector.records
-        if getattr(record, "stage", None) == "start"
+        record.command for record in collector.records if getattr(record, "stage", None) == "start"
     }
     finish_commands = {
-        record.command
-        for record in collector.records
-        if getattr(record, "stage", None) == "finish"
+        record.command for record in collector.records if getattr(record, "stage", None) == "finish"
     }
     expected_commands = {
         "ingest-snapshot",
@@ -335,12 +331,10 @@ def test_monitoring_decision_seams_emit_reason_coded_audit_summaries(
     )
 
     assert any(
-        getattr(record, "mapping_state", None) == "ambiguous"
-        for record in collector.records
+        getattr(record, "mapping_state", None) == "ambiguous" for record in collector.records
     )
     assert any(
-        getattr(record, "decision_state", None) == "accepted"
-        for record in collector.records
+        getattr(record, "decision_state", None) == "accepted" for record in collector.records
     )
     assert any(
         getattr(record, "rejection_reason", None) == "multiple_candidate_matches"

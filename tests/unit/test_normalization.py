@@ -18,15 +18,9 @@ def _build_validated_snapshot(tmp_path: Path):
     source_dir.mkdir()
 
     files = {
-        "atp_players.csv": (
-            "player_id,name_first,name_last\n"
-            "1,Roger,Federer\n"
-            "2,Rafael,Nadal\n"
-        ),
+        "atp_players.csv": ("player_id,name_first,name_last\n1,Roger,Federer\n2,Rafael,Nadal\n"),
         "atp_rankings_2024.csv": (
-            "ranking_date,rank,player,points\n"
-            "20240115,1,1,1000\n"
-            "20240115,2,2,900\n"
+            "ranking_date,rank,player,points\n20240115,1,1,1000\n20240115,2,2,900\n"
         ),
         "atp_matches_2024.csv": (
             "tourney_id,surface,tourney_name,tourney_date,tourney_level,winner_id,loser_id,score,best_of,round,comment\n"
@@ -34,8 +28,7 @@ def _build_validated_snapshot(tmp_path: Path):
             "2024-001,Hard,Example Open,20240115,A,2,1,6-4 6-4,3,Q1,\n"
         ),
         "atp_matchstats_2024.csv": (
-            "match_id,1stWon1,1stWon2,ace1,ace2,svpt1,svpt2\n"
-            "1001,20,15,5,3,40,38\n"
+            "match_id,1stWon1,1stWon2,ace1,ace2,svpt1,svpt2\n1001,20,15,5,3,40,38\n"
         ),
         "wta_matches_2024.csv": "ignored\nvalue\n",
     }

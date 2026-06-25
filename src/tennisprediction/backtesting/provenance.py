@@ -67,4 +67,3 @@ def build_provenance_payload(
         "claim_allowed": claim_guard.allowed,
         "claim_banner": claim_guard.banner,
     }
-

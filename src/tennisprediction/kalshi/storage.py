@@ -97,6 +97,7 @@ _TABLE_SCHEMAS = {
     _ORDERBOOK_SNAPSHOT_TABLE: _ORDERBOOK_SCHEMA,
 }
 
+
 def persist_kalshi_snapshot_batch(
     batch: KalshiSnapshotBatch,
     *,
@@ -212,10 +213,7 @@ def _load_rows(
     records = connection.execute(
         f"select {column_list} from {table_name}",
     ).fetchall()
-    return [
-        row_type(**dict(zip(expected_columns, record, strict=True)))
-        for record in records
-    ]
+    return [row_type(**dict(zip(expected_columns, record, strict=True))) for record in records]
 
 
 def _ddl_for_table(table_name: str) -> str:
@@ -243,8 +241,5 @@ def _validate_table_columns(
         ).fetchall()
     )
     if actual_columns != expected_columns:
-        msg = (
-            f"{table_name} schema drifted: expected {expected_columns}, "
-            f"found {actual_columns}"
-        )
+        msg = f"{table_name} schema drifted: expected {expected_columns}, found {actual_columns}"
         raise ValueError(msg)

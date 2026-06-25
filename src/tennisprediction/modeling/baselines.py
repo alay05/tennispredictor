@@ -273,13 +273,9 @@ def _build_split_frame_and_target(
     dataset: FrozenModelingDataset,
     canonical_match_ids: list[str],
 ) -> tuple[pd.DataFrame, list[int]]:
-    rows_by_match_id = {
-        row.canonical_match_id: row
-        for row in dataset.rows
-    }
+    rows_by_match_id = {row.canonical_match_id: row for row in dataset.rows}
     selected_rows = [
-        rows_by_match_id[canonical_match_id]
-        for canonical_match_id in canonical_match_ids
+        rows_by_match_id[canonical_match_id] for canonical_match_id in canonical_match_ids
     ]
     frame = pd.DataFrame.from_records(
         [

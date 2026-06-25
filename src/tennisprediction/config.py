@@ -58,11 +58,7 @@ class Settings(BaseSettings):
     @classmethod
     def parse_alert_channels(cls, value: object) -> object:
         if isinstance(value, str):
-            return tuple(
-                channel.strip()
-                for channel in value.split(",")
-                if channel.strip()
-            )
+            return tuple(channel.strip() for channel in value.split(",") if channel.strip())
         return value
 
     @model_validator(mode="after")

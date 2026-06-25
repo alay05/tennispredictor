@@ -147,10 +147,7 @@ def estimate_backtest_uncertainty(
     net_profit_samples: list[float] = []
     roi_samples: list[float] = []
     for _ in range(bootstrap_samples):
-        sample_indices = [
-            rng.randrange(len(realized_pnls))
-            for _ in range(len(realized_pnls))
-        ]
+        sample_indices = [rng.randrange(len(realized_pnls)) for _ in range(len(realized_pnls))]
         sample_profit = sum(realized_pnls[index] for index in sample_indices)
         sample_staked = sum(staked[index] for index in sample_indices)
         net_profit_samples.append(sample_profit)

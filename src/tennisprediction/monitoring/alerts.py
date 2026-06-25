@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import Any, TypedDict
 
 from rich.console import Console
 from rich.table import Table
@@ -11,6 +11,17 @@ from tennisprediction.logging import bind_audit_context
 STALE_QUOTE_SECONDS = 30 * 60
 THIN_LIQUIDITY_DOLLARS = 10.0
 _LOGGER = logging.getLogger("tennisprediction.monitoring.alerts")
+
+
+class OperatorReportSummary(TypedDict):
+    accepted_count: int
+    rejected_count: int
+    excluded_count: int
+    ambiguous_count: int
+    unmatched_count: int
+    stale_count: int
+    thin_liquidity_count: int
+    health_warnings: list[str]
 
 
 def build_operator_report_rows(
@@ -33,7 +44,7 @@ def build_operator_report_summary(
     *,
     accepted_rows: list[dict[str, object]],
     rejected_rows: list[dict[str, object]],
-) -> dict[str, object]:
+) -> OperatorReportSummary:
     excluded_count = _count_mapping_state(rejected_rows, "excluded")
     ambiguous_count = _count_mapping_state(rejected_rows, "ambiguous")
     unmatched_count = _count_mapping_state(rejected_rows, "unmatched")
@@ -169,7 +180,7 @@ def _recommendation_label(row: dict[str, object]) -> str:
 def _requires_manual_review(rows: list[dict[str, object]]) -> bool:
     return any(
         str(row.get("mapping_confidence", "")) == "manual_review_required"
-        or "manual_review_required" in row.get("rejection_reason_codes", [])
+        or _row_requires_manual_review(row)
         for row in rows
     )
 
@@ -182,6 +193,13 @@ def _float_or_default(value: object, default: float) -> float:
     if isinstance(value, int | float):
         return float(value)
     return default
+
+
+def _row_requires_manual_review(row: dict[str, object]) -> bool:
+    rejection_reason_codes = row.get("rejection_reason_codes")
+    if not isinstance(rejection_reason_codes, list):
+        return False
+    return "manual_review_required" in rejection_reason_codes
 
 
 def _format_probability(value: Any) -> str:

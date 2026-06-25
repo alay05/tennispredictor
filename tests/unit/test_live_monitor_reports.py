@@ -101,11 +101,15 @@ def test_ranked_outputs_expose_ops01_fields_and_advisory_recommendations(
         "Review",
         "Watchlist",
     ]
-    assert not ranked["recommendation"].str.contains(
-        "buy|sell|order|execute",
-        case=False,
-        regex=True,
-    ).any()
+    assert (
+        not ranked["recommendation"]
+        .str.contains(
+            "buy|sell|order|execute",
+            case=False,
+            regex=True,
+        )
+        .any()
+    )
 
 
 def test_operator_report_surfaces_counts_and_health_warnings(

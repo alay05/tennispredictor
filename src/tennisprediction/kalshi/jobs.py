@@ -190,12 +190,10 @@ def _page_response_payload(
 
 def _orderbook_response_payload(orderbook: KalshiOrderbookDTO) -> dict[str, object]:
     yes_levels = [
-        [str(level.price_dollars), str(level.quantity_fp)]
-        for level in orderbook.yes_levels
+        [str(level.price_dollars), str(level.quantity_fp)] for level in orderbook.yes_levels
     ]
     no_levels = [
-        [str(level.price_dollars), str(level.quantity_fp)]
-        for level in orderbook.no_levels
+        [str(level.price_dollars), str(level.quantity_fp)] for level in orderbook.no_levels
     ]
     return {
         "orderbook_fp": {

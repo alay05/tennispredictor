@@ -23,14 +23,9 @@ def test_materialize_modeling_dataset_joins_labels_and_orders_rows(tmp_path) -> 
     assert earliest_row.feature_values["surface"] == "Clay"
     assert earliest_row.feature_values["elo_diff"] == 25.0
 
-    tie_break_rows = [
-        row
-        for row in dataset.rows
-        if row.as_of_date == "20240102"
-    ]
+    tie_break_rows = [row for row in dataset.rows if row.as_of_date == "20240102"]
     assert [
-        (row.lineage_source_file_path, row.lineage_source_row_number)
-        for row in tie_break_rows
+        (row.lineage_source_file_path, row.lineage_source_row_number) for row in tie_break_rows
     ] == [
         ("atp_matches_2024.csv", 2),
         ("atp_matches_2024_extra.csv", 3),

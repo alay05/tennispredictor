@@ -58,8 +58,7 @@ def test_excluded_match_types_are_quarantined_with_reason_codes(tmp_path: Path) 
 
     assert partitioned.accepted_rows == {}
     reasons = {
-        row["_quarantine_reason"]
-        for row in partitioned.quarantined_rows["atp_matches_2024.csv"]
+        row["_quarantine_reason"] for row in partitioned.quarantined_rows["atp_matches_2024.csv"]
     }
     assert reasons == {"excluded_qualifier", "excluded_retired"}
 

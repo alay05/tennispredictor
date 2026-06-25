@@ -24,7 +24,6 @@ class CanonicalIdFactory:
 
     @staticmethod
     def match_id(
-        self_or_cls=None,
         *,
         source_file_path: str,
         source_row_number: int,

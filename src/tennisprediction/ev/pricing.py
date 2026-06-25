@@ -51,9 +51,7 @@ def evaluate_candidate_side(
     if market_probability is not None and 0.0 <= market_probability <= 1.0:
         edge = model_probability - market_probability
         expected_value_per_contract = (
-            edge
-            - thresholds.fee_per_contract
-            - thresholds.slippage_per_contract
+            edge - thresholds.fee_per_contract - thresholds.slippage_per_contract
         )
         if edge < thresholds.min_edge:
             reason_codes.append("below_min_edge")

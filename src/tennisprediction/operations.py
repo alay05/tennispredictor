@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+from contextlib import AbstractContextManager
 from pathlib import Path
 from uuid import uuid4
 
@@ -48,6 +49,11 @@ from tennisprediction.modeling.registry import (
     load_model_artifact_bundle,
     write_model_artifact_bundle,
 )
+from tennisprediction.modeling.schemas import (
+    FrozenModelingDataset,
+    FrozenSplitManifest,
+    RawModelFitResult,
+)
 from tennisprediction.modeling.splits import SplitBoundaryConfig, freeze_chronological_splits
 from tennisprediction.modeling.xgboost_model import fit_xgboost_candidate
 from tennisprediction.monitoring.reports import (
@@ -68,7 +74,7 @@ def _command_scope(
     *,
     run_id: str | None = None,
     artifact_run_id: str | None = None,
-) -> tuple[logging.LoggerAdapter[logging.Logger], str, object]:
+) -> tuple[logging.LoggerAdapter[logging.Logger], str, AbstractContextManager[None]]:
     effective_run_id = run_id or f"{command}-{uuid4().hex[:12]}"
     context = {
         "run_id": effective_run_id,
@@ -280,10 +286,7 @@ def evaluate_artifact(
             [row.calibrated_probability for row in replay_result.rows],
         )
         evaluation_path = (
-            resolved_settings.reports_dir
-            / "modeling"
-            / bundle.manifest.run_id
-            / "evaluation.json"
+            resolved_settings.reports_dir / "modeling" / bundle.manifest.run_id / "evaluation.json"
         )
         evaluation_path.parent.mkdir(parents=True, exist_ok=True)
         evaluation_path.write_text(
@@ -577,7 +580,12 @@ def _database_path(database_path: str | Path | None, *, settings: Settings) -> P
     return Settings._resolve_repo_path(Path(database_path))
 
 
-def _fit_model(*, dataset: object, split_manifest: object, model_family: str) -> object:
+def _fit_model(
+    *,
+    dataset: FrozenModelingDataset,
+    split_manifest: FrozenSplitManifest,
+    model_family: str,
+) -> RawModelFitResult:
     if model_family == "logistic_regression":
         return fit_logistic_regression_baseline(dataset, split_manifest)
     if model_family == "random_forest":

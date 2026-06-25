@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import duckdb
 
@@ -10,9 +10,10 @@ from tennisprediction.domain.models import CanonicalSnapshot
 
 
 def _flatten(value: Any) -> Any:
-    if is_dataclass(value):
+    if is_dataclass(value) and not isinstance(value, type):
+        dataclass_value = cast(Any, value)
         flattened: dict[str, Any] = {}
-        for key, nested_value in asdict(value).items():
+        for key, nested_value in asdict(dataclass_value).items():
             if isinstance(nested_value, dict):
                 for nested_key, nested_item in nested_value.items():
                     flattened[f"{key}_{nested_key}"] = nested_item

@@ -35,8 +35,7 @@ def evaluate_opportunities(
         artifact_run_id=replay_rows[0].artifact_run_id if replay_rows else run_id,
     )
     market_lookup = {
-        market_input.canonical_match_id: market_input
-        for market_input in market_inputs
+        market_input.canonical_match_id: market_input for market_input in market_inputs
     }
     accepted_records: list[OpportunityDecisionRecord] = []
     rejected_records: list[OpportunityDecisionRecord] = []
@@ -48,12 +47,8 @@ def evaluate_opportunities(
             market_input=market_input,
             thresholds=thresholds,
         )
-        accepted_records.extend(
-            [record for record in batch_records if record.accepted]
-        )
-        rejected_records.extend(
-            [record for record in batch_records if not record.accepted]
-        )
+        accepted_records.extend([record for record in batch_records if record.accepted])
+        rejected_records.extend([record for record in batch_records if not record.accepted])
 
     batch = OpportunityDecisionBatch(
         run_id=run_id,
@@ -114,9 +109,7 @@ def _evaluate_single_row(
         side="negative",
         model_probability=1.0 - replay_row.calibrated_probability,
         market_probability=(
-            None
-            if market_probability_positive is None
-            else 1.0 - market_probability_positive
+            None if market_probability_positive is None else 1.0 - market_probability_positive
         ),
         available_liquidity_dollars=market_input.available_liquidity_dollars,
         thresholds=thresholds,
@@ -157,9 +150,7 @@ def _build_decision_record(
         per_contract_cost = selected_market_probability
         penalty = thresholds.fee_per_contract + thresholds.slippage_per_contract
         realized_pnl = (
-            1.0 - per_contract_cost - penalty
-            if outcome_win
-            else -per_contract_cost - penalty
+            1.0 - per_contract_cost - penalty if outcome_win else -per_contract_cost - penalty
         )
 
     return OpportunityDecisionRecord(
@@ -317,9 +308,7 @@ def _selected_side_input(
     if not isinstance(market_input, ExecutableMarketInput):
         return None
     kalshi_side = (
-        market_input.positive_side
-        if selected_side == "positive"
-        else market_input.negative_side
+        market_input.positive_side if selected_side == "positive" else market_input.negative_side
     )
     return _market_input_side(market_input, kalshi_side)
 
@@ -330,7 +319,9 @@ def _available_liquidity_dollars(
 ) -> float | None:
     if selected_side_input is not None:
         return selected_side_input.available_liquidity_dollars
-    return market_input.available_liquidity_dollars
+    if isinstance(market_input, NormalizedMarketInput):
+        return market_input.available_liquidity_dollars
+    return None
 
 
 def _market_probability_source(
@@ -339,7 +330,9 @@ def _market_probability_source(
 ) -> str:
     if selected_side_input is not None:
         return selected_side_input.entry_price_source
-    return _coerce_market_probability_source(market_input.market_probability_source)
+    if isinstance(market_input, NormalizedMarketInput):
+        return _coerce_market_probability_source(market_input.market_probability_source)
+    return ""
 
 
 def _liquidity_source(
@@ -348,7 +341,9 @@ def _liquidity_source(
 ) -> str:
     if selected_side_input is not None:
         return selected_side_input.liquidity_source
-    return market_input.liquidity_source
+    if isinstance(market_input, NormalizedMarketInput):
+        return market_input.liquidity_source
+    return ""
 
 
 def _entry_price_source(
@@ -357,7 +352,9 @@ def _entry_price_source(
 ) -> str:
     if selected_side_input is not None:
         return selected_side_input.entry_price_source
-    return _coerce_market_probability_source(market_input.market_probability_source)
+    if isinstance(market_input, NormalizedMarketInput):
+        return _coerce_market_probability_source(market_input.market_probability_source)
+    return ""
 
 
 def _freshness_age_seconds(
