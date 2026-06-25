@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 import json
+from io import StringIO
 from pathlib import Path
-from typing import Any
 
 import pandas as pd
 from rich.console import Console
-from rich.table import Table
 
 from tennisprediction.config import Settings
+from tennisprediction.monitoring.alerts import (
+    build_operator_report_rows,
+    build_operator_report_summary,
+    render_operator_report,
+)
 
 
 def write_live_monitor_reports(
@@ -21,7 +25,11 @@ def write_live_monitor_reports(
     report_dir = settings.reports_dir / "monitoring" / run_id
     report_dir.mkdir(parents=True, exist_ok=False)
 
-    ranked_rows = _rank_accepted_rows(accepted_rows)
+    ranked_rows = build_operator_report_rows(accepted_rows)
+    operator_summary = build_operator_report_summary(
+        accepted_rows=accepted_rows,
+        rejected_rows=rejected_rows,
+    )
     _write_json(
         report_dir / "summary.json",
         {
@@ -29,11 +37,22 @@ def write_live_monitor_reports(
             "rejected_count": len(rejected_rows),
             "mapping_state_counts": _mapping_state_counts(accepted_rows, rejected_rows),
             "rejection_reason_counts": _rejection_reason_counts(rejected_rows),
+            "health_warnings": operator_summary["health_warnings"],
         },
     )
     _write_parquet(report_dir / "accepted_opportunities.parquet", ranked_rows)
     _write_parquet(report_dir / "rejected_opportunities.parquet", rejected_rows)
     _write_csv(report_dir / "ranked_opportunities.csv", ranked_rows)
+    record_console = Console(record=True, width=160, file=StringIO())
+    render_operator_report(
+        accepted_rows=accepted_rows,
+        rejected_rows=rejected_rows,
+        console=record_console,
+    )
+    (report_dir / "operator_report.txt").write_text(
+        record_console.export_text(clear=False),
+        encoding="utf-8",
+    )
     return report_dir
 
 
@@ -44,47 +63,10 @@ def render_live_monitor_console(
     console: Console | None = None,
 ) -> None:
     active_console = console or Console()
-    table = Table(title="Accepted Opportunities")
-    table.add_column("Ticker")
-    table.add_column("Match")
-    table.add_column("EV")
-    table.add_column("Edge")
-    table.add_column("Liquidity")
-    table.add_column("Confidence")
-    table.add_column("Freshness")
-    table.add_column("Mapping")
-    for row in _rank_accepted_rows(accepted_rows):
-        table.add_row(
-            str(row.get("market_ticker", "")),
-            str(row.get("canonical_match_id", "")),
-            _format_float(row.get("expected_value_per_contract")),
-            _format_float(row.get("edge")),
-            _format_float(row.get("available_liquidity_dollars")),
-            _format_float(row.get("confidence")),
-            _format_float(row.get("freshness_age_seconds")),
-            f"{row.get('mapping_state', '')}/{row.get('mapping_confidence', '')}",
-        )
-    active_console.print(table)
-    active_console.print(
-        {
-            "accepted_count": len(accepted_rows),
-            "rejected_count": len(rejected_rows),
-            "mapping_state_counts": _mapping_state_counts(accepted_rows, rejected_rows),
-            "rejection_reason_counts": _rejection_reason_counts(rejected_rows),
-        }
-    )
-
-
-def _rank_accepted_rows(rows: list[dict[str, object]]) -> list[dict[str, object]]:
-    return sorted(
-        rows,
-        key=lambda row: (
-            -_float_or_default(row.get("expected_value_per_contract"), float("-inf")),
-            -_float_or_default(row.get("edge"), float("-inf")),
-            -_float_or_default(row.get("available_liquidity_dollars"), float("-inf")),
-            -_float_or_default(row.get("confidence"), float("-inf")),
-            _float_or_default(row.get("freshness_age_seconds"), float("inf")),
-        ),
+    render_operator_report(
+        accepted_rows=accepted_rows,
+        rejected_rows=rejected_rows,
+        console=active_console,
     )
 
 
@@ -120,15 +102,3 @@ def _write_csv(path: Path, rows: list[dict[str, object]]) -> None:
 
 def _write_parquet(path: Path, rows: list[dict[str, object]]) -> None:
     pd.DataFrame.from_records(rows).to_parquet(path, index=False)
-
-
-def _float_or_default(value: object, default: float) -> float:
-    if isinstance(value, int | float):
-        return float(value)
-    return default
-
-
-def _format_float(value: Any) -> str:
-    if isinstance(value, int | float):
-        return f"{float(value):.3f}"
-    return ""

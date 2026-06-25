@@ -38,7 +38,7 @@ def test_write_live_monitor_reports_persists_phase06_artifacts_and_operator_repo
     assert (report_dir / "operator_report.txt").is_file()
 
     ranked = pd.read_csv(report_dir / "ranked_opportunities.csv")
-    assert ranked["canonical_match_id"].tolist() == ["match-b", "match-a", "match-c"]
+    assert ranked["canonical_match_id"].tolist() == ["match-a", "match-b", "match-c"]
     assert {"mapping_state", "mapping_confidence"}.issubset(ranked.columns)
 
     accepted = pd.read_parquet(report_dir / "accepted_opportunities.parquet")
@@ -92,8 +92,8 @@ def test_ranked_outputs_expose_ops01_fields_and_advisory_recommendations(
         "recommendation",
     }.issubset(ranked.columns)
     assert ranked["matchup"].tolist() == [
-        "Jannik Sinner vs Carlos Alcaraz",
         "Novak Djokovic vs Carlos Alcaraz",
+        "Jannik Sinner vs Carlos Alcaraz",
         "Taylor Fritz vs Casper Ruud",
     ]
     assert ranked["recommendation"].tolist() == [
