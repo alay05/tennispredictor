@@ -1,0 +1,47 @@
+name: quality-gates
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Sync locked environment
+        run: uv sync --locked --dev --group ml
+
+      - name: Ruff check
+        run: .venv/bin/ruff check .
+
+      - name: Ruff format check
+        run: .venv/bin/ruff format --check .
+
+      - name: Mypy src
+        run: .venv/bin/mypy src
+
+      - name: Pytest critical surface
+        run: >-
+          .venv/bin/pytest -q
+          tests/unit/test_cli_smoke.py
+          tests/unit/test_cli_commands.py
+          tests/unit/test_operational_logging.py
+          tests/unit/test_live_monitor_reports.py
+          tests/unit/test_live_scan_orchestration.py
+          tests/unit/test_feature_leakage.py
+          tests/unit/test_backtesting_decisions.py
+          tests/unit/test_live_scan_pricing_contract.py
+          -x

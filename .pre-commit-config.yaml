@@ -1,0 +1,33 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: .venv/bin/ruff check .
+        language: system
+        pass_filenames: false
+      - id: ruff-format-check
+        name: ruff format check
+        entry: .venv/bin/ruff format --check .
+        language: system
+        pass_filenames: false
+      - id: mypy-src
+        name: mypy src
+        entry: .venv/bin/mypy src
+        language: system
+        pass_filenames: false
+      - id: pytest-critical-surface
+        name: pytest critical surface
+        entry: >-
+          .venv/bin/pytest -q
+          tests/unit/test_cli_smoke.py
+          tests/unit/test_cli_commands.py
+          tests/unit/test_operational_logging.py
+          tests/unit/test_live_monitor_reports.py
+          tests/unit/test_live_scan_orchestration.py
+          tests/unit/test_feature_leakage.py
+          tests/unit/test_backtesting_decisions.py
+          tests/unit/test_live_scan_pricing_contract.py
+          -x
+        language: system
+        pass_filenames: false
