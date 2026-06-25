@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from importlib import import_module
 import logging
-from pathlib import Path
 import tomllib
+from importlib import import_module
+from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner

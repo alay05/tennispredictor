@@ -6,8 +6,8 @@ from typing import Any
 import pytest
 from typer.testing import CliRunner
 
-from tennisprediction.cli import app
 from tennisprediction import operations
+from tennisprediction.cli import app
 
 runner = CliRunner()
 VALID_SOURCE_COMMIT_SHA = "0123456789abcdef0123456789abcdef01234567"
@@ -50,7 +50,7 @@ def test_cli_rejects_watch_mode_flags() -> None:
     )
 
     assert result.exit_code != 0
-    assert "No such option: --watch" in result.stdout
+    assert "No such option: --watch" in result.output
 
 
 @pytest.mark.parametrize(

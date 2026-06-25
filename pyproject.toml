@@ -34,7 +34,7 @@ ml = [
 ]
 
 [project.scripts]
-tennisprediction = "tennisprediction.cli:main"
+tennisprediction = "tennisprediction.cli:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tennisprediction"]
