@@ -69,7 +69,7 @@ Requirements for the initial release. Each maps to a roadmap phase.
 
 ### Alerts and Operations
 
-- [ ] **OPS-01**: System emits terminal and persisted opportunity reports containing match, market ticker, model probability, market probability, edge, expected value, liquidity, mapping confidence, and recommendation.
+- [x] **OPS-01**: System emits terminal and persisted opportunity reports containing match, market ticker, model probability, market probability, edge, expected value, liquidity, mapping confidence, and recommendation.
 - [x] **OPS-02**: System supports configurable thresholds, model artifact selection, report selection, storage paths, and terminal/file alert channel settings for one-shot runs.
 - [ ] **OPS-03**: System logs ingestion, feature generation, training, backtesting, Kalshi polling, mapping, EV filtering, and alert decisions with enough context for audit.
 - [x] **OPS-04**: System provides CLI commands for ingestion, feature build, training, evaluation, backtesting, Kalshi snapshot collection, live scan, and opportunity reporting.
@@ -159,7 +159,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MKT-06 | Phase 6 | Pending |
 | MKT-07 | Phase 6 | Pending |
 | MKT-08 | Phase 6 | Pending |
-| OPS-01 | Phase 7 | Pending |
+| OPS-01 | Phase 7 | Complete |
 | OPS-02 | Phase 7 | Complete |
 | OPS-03 | Phase 7 | Pending |
 | OPS-04 | Phase 7 | Complete |

@@ -194,7 +194,7 @@ Plans:
   4. Operator can run CLI commands for ingestion, feature build, training, evaluation, backtesting, Kalshi snapshot collection, live scan, and opportunity reporting.
   5. Developer can run CI or local quality gates for tests, linting, formatting, typing, critical leakage logic, and EV logic, and can read documentation for setup, data sources, Kalshi configuration, pipeline commands, output files, backtest limitations, and v1 scope boundaries.
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
 
@@ -204,7 +204,7 @@ Plans:
 
 **Wave 2**
 
-- [ ] 07-01-PLAN.md — Opportunity reports and configurable alert settings
+- [x] 07-01-PLAN.md — Opportunity reports and configurable alert settings
 
 **Wave 3**
 
@@ -227,4 +227,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Backtesting and EV Decision Core | 3/3 | Complete | 2026-06-20 |
 | 5. Kalshi Read-Only Market Integration | 3/3 | Complete | 2026-06-20 |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 4/4 | Complete | 2026-06-21 |
-| 7. Alerts and Operational Hardening | 1/4 | In Progress|  |
+| 7. Alerts and Operational Hardening | 2/4 | In Progress|  |
