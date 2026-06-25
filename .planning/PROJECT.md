@@ -10,26 +10,23 @@ The initial specification is `project-outline.yaml`; it is treated as the source
 
 Produce trustworthy, leakage-free ATP match win probabilities and convert them into actionable Kalshi-only positive expected value signals.
 
+## Current State
+
+v1.0 MVP has shipped. The ATP-only, Kalshi-only workflow now includes historical ingestion, leakage-safe feature generation, calibrated model training, guarded backtesting, read-only Kalshi collection, market mapping, live EV ranking, one-shot CLI operations, repo-local quality gates, and an operator runbook.
+
+## Next Milestone Goals
+
+None yet. Any future scope should begin as a new milestone after the v1.0 archive.
+
 ## Requirements
 
 ### Validated
 
-(None yet - ship to validate)
+- All v1 requirements validated and archived in `.planning/milestones/v1.0-REQUIREMENTS.md`.
 
 ### Active
 
-- [ ] Ingest ATP historical match and ranking data from Jeff Sackmann's `tennis_atp` repository.
-- [ ] Build chronological, leakage-safe match features using only information available before match start.
-- [ ] Maintain overall and surface-specific Elo ratings for ATP players.
-- [ ] Train baseline and production models that predict ATP match winners and calibrated win probabilities.
-- [ ] Evaluate predictive quality with accuracy, ROC AUC, log loss, Brier score, and calibration metrics.
-- [ ] Backtest model-driven betting decisions before any live betting use.
-- [ ] Integrate with Kalshi APIs for ATP market discovery, market pricing, and orderbook liquidity.
-- [ ] Normalize player names and map Kalshi markets to ATP matches.
-- [ ] Calculate market implied probability, model edge, expected value, and recommended bet decisions.
-- [ ] Rank and alert on positive expected value opportunities using configurable thresholds.
-- [ ] Persist historical matches, ratings, predictions, live markets, opportunities, and backtest outputs.
-- [ ] Provide a reproducible, typed, logged, configurable training and prediction pipeline with unit tests for critical logic.
+- None - v1.0 is complete.
 
 ### Out of Scope
 
@@ -64,14 +61,14 @@ The live workflow polls Kalshi markets, normalizes player names, maps markets to
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Scope is ATP only | The user explicitly constrained the project to ATP and the data source is ATP-specific. | - Pending |
-| Jeff Sackmann `tennis_atp` is the primary historical source | The YAML identifies it as the primary source for matches, rankings, stats, surfaces, and tournament context. | - Pending |
-| Kalshi is the only betting/market integration | The user explicitly constrained market integration to Kalshi only. | - Pending |
-| Chronological modeling is mandatory | Tennis prediction features are highly leakage-prone; the spec requires no future information. | - Pending |
-| XGBoost is the primary production model candidate | The YAML identifies logistic regression and random forest as baselines and XGBoost as production. | - Pending |
-| Live betting starts as EV detection and alerting, not execution | This keeps v1 focused on model quality, market mapping, backtesting, and actionable recommendations before trading automation. | - Pending |
-| Workflow mode is YOLO with standard granularity and parallel execution | The user selected these GSD project settings during initialization. | - Pending |
-| Planning documents are committed to git | The user selected tracked planning docs. | - Pending |
+| Scope is ATP only | The user explicitly constrained the project to ATP and the data source is ATP-specific. | Validated in v1.0 |
+| Jeff Sackmann `tennis_atp` is the primary historical source | The YAML identifies it as the primary source for matches, rankings, stats, surfaces, and tournament context. | Validated in v1.0 |
+| Kalshi is the only betting/market integration | The user explicitly constrained market integration to Kalshi only. | Validated in v1.0 |
+| Chronological modeling is mandatory | Tennis prediction features are highly leakage-prone; the spec requires no future information. | Validated in v1.0 |
+| XGBoost is the primary production model candidate | The YAML identifies logistic regression and random forest as baselines and XGBoost as production. | Validated in v1.0 |
+| Live betting starts as EV detection and alerting, not execution | This keeps v1 focused on model quality, market mapping, backtesting, and actionable recommendations before trading automation. | Validated in v1.0 |
+| Workflow mode is YOLO with standard granularity and parallel execution | The user selected these GSD project settings during initialization. | Validated in v1.0 |
+| Planning documents are committed to git | The user selected tracked planning docs. | Validated in v1.0 |
 
 ## Evolution
 
@@ -91,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-16 after initialization*
+*Last updated: 2026-06-25 after v1.0 milestone closeout*
