@@ -189,19 +189,30 @@ Plans:
 **Success Criteria** (what must be TRUE):
 
   1. Operator can receive terminal and persisted opportunity reports with match, ticker, model probability, market probability, edge, expected value, liquidity, mapping confidence, and recommendation.
-  2. Operator can configure polling interval, thresholds, model artifact selection, storage paths, and alert channel settings.
+  2. Operator can configure thresholds, model artifact selection, report selection, storage paths, and terminal/file alert channel settings for one-shot runs.
   3. System logs ingestion, feature generation, training, backtesting, Kalshi polling, mapping, EV filtering, and alert decisions with audit context.
   4. Operator can run CLI commands for ingestion, feature build, training, evaluation, backtesting, Kalshi snapshot collection, live scan, and opportunity reporting.
   5. Developer can run CI or local quality gates for tests, linting, formatting, typing, critical leakage logic, and EV logic, and can read documentation for setup, data sources, Kalshi configuration, pipeline commands, output files, backtest limitations, and v1 scope boundaries.
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 
-- [ ] 07-01: Opportunity reports and configurable alert settings
-- [ ] 07-02: Audit logging across pipeline, market, mapping, EV, and alert decisions
-- [ ] 07-03: End-to-end CLI commands and operational configuration
-- [ ] 07-04: Quality gates and v1 documentation
+**Wave 1**
+
+- [x] 07-03-PLAN.md — End-to-end CLI commands and operational configuration
+
+**Wave 2**
+
+- [ ] 07-01-PLAN.md — Opportunity reports and configurable alert settings
+
+**Wave 3**
+
+- [ ] 07-02-PLAN.md — Audit logging across pipeline, market, mapping, EV, and alert decisions
+
+**Wave 4**
+
+- [ ] 07-04-PLAN.md — Quality gates and v1 documentation
 
 ## Progress
 
@@ -216,4 +227,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Backtesting and EV Decision Core | 3/3 | Complete | 2026-06-20 |
 | 5. Kalshi Read-Only Market Integration | 3/3 | Complete | 2026-06-20 |
 | 6. Market Mapping, Executable Pricing, and Live EV Monitor | 4/4 | Complete | 2026-06-21 |
-| 7. Alerts and Operational Hardening | 0/4 | Not started | - |
+| 7. Alerts and Operational Hardening | 1/4 | In Progress|  |

@@ -41,7 +41,7 @@
 | ID | Description | Research Support |
 |----|-------------|------------------|
 | OPS-01 | Terminal and persisted opportunity reports include match, ticker, model probability, market probability, edge, EV, liquidity, mapping confidence, and recommendation. | Extend `src/tennisprediction/monitoring/reports.py` from Phase 06 instead of creating a parallel reporting path; use Rich tables plus persisted machine-readable artifacts from the same ranked rows. [VERIFIED: codebase grep] [CITED: https://rich.readthedocs.io/en/stable/console.html] |
-| OPS-02 | Configurable polling interval, thresholds, model artifact selection, storage paths, and alert channel settings. | Locked decisions narrow this to thresholds, artifact/report selection, and storage paths for v1; use `pydantic-settings` in the existing `Settings` seam instead of manual env parsing. [VERIFIED: codebase grep] [CITED: https://pydantic.dev/docs/validation/latest/concepts/pydantic_settings/] |
+| OPS-02 | Configurable thresholds, model artifact selection, report selection, storage paths, and terminal/file alert channel settings for one-shot runs. | Locked decisions D-06 and D-07 resolve the stale polling language in favor of a one-shot settings surface; use `pydantic-settings` in the existing `Settings` seam instead of manual env parsing. [VERIFIED: codebase grep] [CITED: https://pydantic.dev/docs/validation/latest/concepts/pydantic_settings/] |
 | OPS-03 | Audit logging across ingestion, features, training, backtesting, polling, mapping, EV filtering, and alert decisions. | Replace the current bootstrap-only logging seam with contextual file/console handlers and run-level metadata using stdlib logging adapters/filters. [VERIFIED: codebase grep] [CITED: https://docs.python.org/3/howto/logging-cookbook.html] [CITED: https://docs.python.org/3/library/logging.handlers.html] |
 | OPS-04 | CLI commands for ingestion, feature build, training, evaluation, backtesting, Kalshi snapshot collection, live scan, and opportunity reporting. | Keep one Typer app and add subcommands/groups under the existing callback bootstrap pattern; also fix the packaged entrypoint before adding more commands. [VERIFIED: codebase grep] [VERIFIED: local CLI run] [CITED: https://typer.tiangolo.com/tutorial/commands/callback/] |
 | OPS-05 | CI or local quality gates for tests, linting, formatting, typing, and critical leakage/EV logic. | Implement repo-local commands with `uv run`, add `.pre-commit-config.yaml`, and add GitHub Actions CI wired to `uv sync --locked`. [VERIFIED: codebase grep] [CITED: https://pre-commit.com/] [CITED: https://docs.astral.sh/uv/guides/integration/github/] |
@@ -360,12 +360,12 @@ pre-commit run --all-files
 | A2 | Free-form log lines without stable fields would be insufficient for audit review. | Common Pitfalls | If the team only wants human-readable logs, the logging design could be simpler than recommended. |
 | A3 | Documentation and repo config should land in the same plan slice for OPS-05/OPS-06. | Common Pitfalls | The planner might otherwise split them, which could still work if sequencing is managed carefully. |
 
-## Open Questions
+## Resolved Questions
 
-1. **How should OPS-02’s “polling interval” wording be reconciled with locked decisions D-06 and D-07?**
-   - What we know: The requirement text still mentions configurable polling interval, but the locked user decisions explicitly defer continuous polling and daemonized workflows. [VERIFIED: codebase grep]
-   - What's unclear: Whether the planner should add a placeholder config/documentation surface for future polling or simply document that continuous-run controls are out of scope in v1. [ASSUMED]
-   - Recommendation: Treat the locked decisions as authoritative and satisfy OPS-02 through thresholds, artifact/report selection, and storage paths now, while documenting continuous polling as deferred. [VERIFIED: codebase grep]
+1. **OPS-02 source of truth**
+   - Resolution: Locked decisions D-06 and D-07 are authoritative. Phase 07 does not include configurable polling interval or any other continuous-run control. [VERIFIED: codebase grep]
+   - Updated contract: OPS-02 means configurable thresholds, model artifact selection, report selection, storage paths, and terminal/file alert channel settings for one-shot runs. [VERIFIED: codebase grep]
+   - Follow-through: `ROADMAP.md`, `REQUIREMENTS.md`, and the Phase 07 plans must use this one-shot wording so execution starts from a resolved contract with no polling mismatch left open. [VERIFIED: codebase grep]
 
 ## Environment Availability
 

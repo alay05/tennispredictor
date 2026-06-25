@@ -70,9 +70,9 @@ Requirements for the initial release. Each maps to a roadmap phase.
 ### Alerts and Operations
 
 - [ ] **OPS-01**: System emits terminal and persisted opportunity reports containing match, market ticker, model probability, market probability, edge, expected value, liquidity, mapping confidence, and recommendation.
-- [ ] **OPS-02**: System supports configurable polling interval, thresholds, model artifact selection, storage paths, and alert channel settings.
+- [x] **OPS-02**: System supports configurable thresholds, model artifact selection, report selection, storage paths, and terminal/file alert channel settings for one-shot runs.
 - [ ] **OPS-03**: System logs ingestion, feature generation, training, backtesting, Kalshi polling, mapping, EV filtering, and alert decisions with enough context for audit.
-- [ ] **OPS-04**: System provides CLI commands for ingestion, feature build, training, evaluation, backtesting, Kalshi snapshot collection, live scan, and opportunity reporting.
+- [x] **OPS-04**: System provides CLI commands for ingestion, feature build, training, evaluation, backtesting, Kalshi snapshot collection, live scan, and opportunity reporting.
 - [ ] **OPS-05**: System includes CI or local quality gates for tests, linting, formatting, typing, and critical leakage/EV logic.
 - [ ] **OPS-06**: System documentation explains setup, data sources, Kalshi configuration, pipeline commands, output files, backtest limitations, and v1 scope boundaries.
 
@@ -160,9 +160,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MKT-07 | Phase 6 | Pending |
 | MKT-08 | Phase 6 | Pending |
 | OPS-01 | Phase 7 | Pending |
-| OPS-02 | Phase 7 | Pending |
+| OPS-02 | Phase 7 | Complete |
 | OPS-03 | Phase 7 | Pending |
-| OPS-04 | Phase 7 | Pending |
+| OPS-04 | Phase 7 | Complete |
 | OPS-05 | Phase 7 | Pending |
 | OPS-06 | Phase 7 | Pending |
 

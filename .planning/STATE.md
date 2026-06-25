@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 7 context gathered
-last_updated: "2026-06-25T01:12:30.256Z"
-last_activity: 2026-06-21 -- Phase 06 read-only live monitor delivered
+status: executing
+stopped_at: Completed 07-03-PLAN.md
+last_updated: "2026-06-25T02:59:04.778Z"
+last_activity: 2026-06-25 -- Phase 07 execution started
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 23
-  completed_plans: 23
+  total_plans: 27
+  completed_plans: 24
   percent: 86
 ---
 
@@ -26,10 +26,10 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 ## Current Position
 
-Phase: 06 — COMPLETE
-Plan: 4 of 4
-Status: Ready to plan Phase 07
-Last activity: 2026-06-21 -- Phase 06 read-only live monitor delivered
+Phase: 07 (alerts-and-operational-hardening) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-06-25 -- Phase 07 execution started
 
 Progress: [████████░░] 85%
 
@@ -63,6 +63,7 @@ Progress: [████████░░] 85%
 | Phase 06 P02 | 18min | 2 tasks | 4 files |
 | Phase 06 P03 | 7min | 2 tasks | 6 files |
 | Phase 06 P04 | 20min | 3 tasks | 7 files |
+| Phase 07 P03 | 30min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,9 @@ Recent decisions affecting current work:
 - [Phase 03]: Split manifests now carry shared source provenance so artifact manifests can record the exact pinned Jeff Sackmann commit SHA without reopening datasets.
 - [Phase 06]: Reuse the Phase 03 artifact bundle through a canonical-id replay helper rather than creating a second live-serving prediction seam.
 - [Phase 06]: Persist mapping_state and mapping_confidence on both accepted and rejected monitor outputs so later alerting consumes one auditable contract.
+- [Phase 07]: CLI handlers now delegate through tennisprediction.operations — Logging, docs, and later report work can target one stable one-shot orchestration seam.
+- [Phase 07]: run-backtest uses a synthetic even-money proxy over replayed predictions — Phase 07 needs a one-shot backtest command without implying historical Kalshi price coverage that the project has not built yet.
+- [Phase 07]: Packaged console script now targets the Typer app object — This makes the packaged tennisprediction entrypoint execute the real command tree instead of a callback-only seam.
 
 ### Pending Todos
 
@@ -118,6 +122,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-25T01:12:30.245Z
-Stopped at: Phase 7 context gathered
-Resume file: .planning/phases/07-alerts-and-operational-hardening/07-CONTEXT.md
+Last session: 2026-06-25T11:54:38Z
+Stopped at: Phase 7 execution in progress after Wave 1 complete
+Resume file: None
